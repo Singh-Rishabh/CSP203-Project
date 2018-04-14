@@ -105,7 +105,7 @@
                             <i class="fa fa-bars"></i>
                         </button>
                         <!-- End Toggle Nav Link For Mobiles -->
-                        <a class="navbar-brand" href="index.html"><img src="img/iitrprlogo.jpg" style="max-height: 40px;max-width: 40px; margin-top: -10px;"></a>
+                        <a class="navbar-brand" href="#"><img src="img/iitrprlogo.jpg" style="max-height: 40px;max-width: 40px; margin-top: -10px;"></a>
                     </div>
                     <div class="navbar-collapse collapse">
                         
@@ -162,7 +162,7 @@
                 <nav role="navigation" class="navbar navbar-inverse">
                   <div class="container-fluid">
                       <div class="navbar-header">
-                          <a class="navbar-brand" href="index.html"><img src="img/bookLogo2.jpg" style="max-height: 40px;max-width: 40px; margin-top: -10px;"></a>
+                          <a class="navbar-brand" href="#"><img src="img/bookLogo2.jpg" style="max-height: 40px;max-width: 40px; margin-top: -10px;"></a>
                           <button type="button" class="navbar-toggle" data-target="#navbarCollapse" data-toggle="collapse">
                           <span class="icon-bar"></span>
                           <span class="icon-bar"></span>
@@ -183,14 +183,17 @@
                                 <label for="password" style="border:none; color: white;">Password: </label>
                                 <input type="password" id="password" placeholder="Password" class="form-control" style="border-color: #ccc;">
                             </div>
-                                <input type="submit" id="submit" class="btn btn-default" value="Login">
+                                <input type="submit" id="loginbtn" class="btn btn-default" value="Login">
+                               <input type="submit" id="signupbtn" class="btn btn-default" value="Sign Up">
                          </form>
                       </div>
                   </div>
               </nav>
             </div>
         </div>
-                
+           
+        
+        
         <!-- Start Portfolio Section -->
         <section id="portfolio" class="portfolio-section-1">
             <div class="container">
@@ -201,20 +204,20 @@
                         <ul id="portfolio-list">
                             <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="300ms">
                                 <div class="portfolio-item">
-                                    <img src="asset/images/portfolio/img1.jpg" class="img-responsive" alt="" />
+                                    <img src="img/book.png" class="img-responsive" style="opacity:0.8" alt="" />
                                     <div class="portfolio-caption">
                                         <h4>Portfolio Title</h4>
                                         <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium</p>
                                         <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
                                         <a href="#" class="link-2"><i class="fa fa-link"></i></a>
-                                    </dxiv>
+                                    </div>
                                 </div>
                             </li>
                             
                             
                             <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="600ms">
                                 <div class="portfolio-item">
-                                    <img src="asset/images/portfolio/img2.jpg" class="img-responsive" alt="" />
+                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
                                     <div class="portfolio-caption">
                                         <h4>Portfolio Title</h4>
                                         <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium</p>
@@ -225,7 +228,7 @@
                             </li>
                             <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="900ms">
                                 <div class="portfolio-item">
-                                    <img src="asset/images/portfolio/img3.jpg" class="img-responsive" alt="" />
+                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
                                     <div class="portfolio-caption">
                                         <h4>Portfolio Title</h4>
                                         <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium</p>
@@ -236,7 +239,7 @@
                             </li>
                             <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="1200ms">
                                 <div class="portfolio-item">
-                                    <img src="asset/images/portfolio/img4.jpg" class="img-responsive" alt="" />
+                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
                                     <div class="portfolio-caption">
                                         <h4>Portfolio Title</h4>
                                         <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium</p>
@@ -247,7 +250,7 @@
                             </li>
                             <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="1500ms">
                                 <div class="portfolio-item">
-                                    <img src="asset/images/portfolio/img5.jpg" class="img-responsive" alt="" />
+                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
                                     <div class="portfolio-caption">
                                         <h4>Portfolio Title</h4>
                                         <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium</p>
@@ -258,7 +261,7 @@
                             </li>
                             <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="1800ms">
                                 <div class="portfolio-item">
-                                    <img src="asset/images/portfolio/img6.jpg" class="img-responsive" alt="" />
+                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
                                     <div class="portfolio-caption">
                                         <h4>Portfolio Title</h4>
                                         <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium</p>
@@ -275,6 +278,8 @@
                 </div>
             </div>
         </section>
+        
+<!--        <img  class="img-responsive"/>-->
         <!-- End Portfolio Section -->
         
         

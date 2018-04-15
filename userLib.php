@@ -156,7 +156,10 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12 text-center">
-                            <h1>Welcome to library</h1>
+                            <?php
+
+                                echo "<h1>Hi, " . $_SESSION['userID1'] ." " . $_SESSION['userID2'] ." " . $_SESSION['userID3'] ." " . $_SESSION['person_id'] . "</h1>";
+                            ?>
                         </div>
                     </div>
                 </div>
@@ -175,80 +178,11 @@
                           </button>
                       </div>
                       <div class="navbar-collapse collapse" id="navbarCollapse">
-                           <form class="navbar-form navbar-right" method="post">
+                           <form class="navbar-form navbar-right">
                             <div class="form-group">
                                 <input type="text" id="searchBooks" placeholder="Search Books" class="form-control" style="border-color: #ccc;">
                             </div>
                                 <input type="submit" id="searchBookBtn" class="btn btn-default" value="Search" style="border-color: #ccc; margin-right: 15px;">
-                            <div class="form-group">
-<!--                                <label for="email" style="border:none; color: white;">Email: </label>-->
-                                <input type="text" id="username" placeholder="Username" class="form-control" style="border-color: #ccc;" name="usernameTOlogin">
-                            </div>
-                            <div class="form-group">
-<!--                                <label for="password" style="border:none; color: white;">Password: </label>-->
-                                <input type="password" id="password" placeholder="Password" class="form-control" name="passwordTOlogin" style="border-color: #ccc;" >
-                            </div>
-                                <button  type="submit" name="loginbtn" class="btn btn-default">Login</button>
-                               <a href="signup.php" class="btn btn-default">Sign UP</a>
-                               <a style="padding-left:2px">Forget Password?</a>
-                                       <?php
-                                            $servername = "localhost";
-                                            $username = "root";
-                                            $password = "";
-
-                                            // Create connection
-                                            $conn = new mysqli($servername, $username, $password);
-
-                                            // Check connection
-                                            if ($conn->connect_error) {
-                                                die("Connection failed: " . $conn->connect_error);
-                                            }
-
-                                            mysqli_select_db($conn,'library');
-                                            $_SESSION["userID1"]="";
-                                            $_SESSION["userID2"]="";
-                                            $_SESSION["userID3"]="";
-                                            if (isset($_POST["loginbtn"])){
-                                                var_dump(isset($_POST["usernameTOlogin"]));
-                                                if(isset($_POST["usernameTOlogin"])){
-                                                    $sql = "SELECT * FROM authenticate WHERE user_name = '". $_POST["usernameTOlogin"] . "'";
-                                                    $result = mysqli_query($conn, $sql);
-                                                    if (mysqli_num_rows($result) > 0) {
-                                                        
-                                                        $row = mysqli_fetch_assoc($result);
-//                                                        echo "<script>alert('" .row['person_id']. "');</script>";
-                                                        $_SESSION["person_id"] = $row['person_id'];
-                                                        echo $row['password'];
-                                                        $_SESSION["userID2"] = $row['password'];
-                                                        if(isset($_POST["passwordTOlogin"])){
-                                                            $_SESSION["userID3"] = $_POST["passwordTOlogin"];
-                                                            echo "\n".$_POST["passwordTOlogin"];
-                                                            if (strcmp($_POST["passwordTOlogin"],$row['password']) == 0){
-                                                                $_SESSION["userID1"] = $_POST["usernameTOlogin"];
-                                                                $sql1 = "SELECT is_admin FROM user_info where person_id =". $row['person_id'];
-                                                                $result1 = mysqli_query($conn, $sql1);
-                                                                $row1 = mysqli_fetch_assoc($result1);
-                                                                if ($row1['is_admin'] == 0){
-                                                                    header('Location: userLib.php');
-                                                                }else {
-                                                                    header('Location: adminLib.php');
-                                                                }
-                                                                
-                                                            }else {
-                                                                echo "<script>alert('Wrong Password:\)');</script>";
-                                                            }
-                                                        }
-                                                    }else{
-                                                        echo "<script>alert('USERNAME not Found:\)');</script>";
-                                                    }
-                                                    
-                                                }
-//                                                if(isset($_SESSION["userID1"])){ 
-//                                                    echo $_SESSION["userID1"];
-//                                                    
-//                                                }
-                                            }
-                                        ?>
                          </form>
                       </div>
                   </div>
@@ -256,7 +190,7 @@
             </div>
         </div>
         
-
+        
            
         
         
@@ -344,12 +278,6 @@
                 </div>
             </div>
         </section>
-        
-<!--        <img  class="img-responsive"/>-->
-        <!-- End Portfolio Section -->
-        
-        
-        
         
         
         

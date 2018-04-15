@@ -19,6 +19,10 @@ create table reference(
 	cat_id int NOT NULL,
 	FOREIGN KEY (event_id) REFERENCES event(event_id),
 	FOREIGN KEY (cat_id) REFERENCES category(cat_id)
-)
+);
 
-
+Insert into category(cat) values("General");
+Insert into category(cat) values("Technical Clubs");
+Insert into category(cat) values("Sports");
+Insert into category(cat) values("T&P");
+Insert into category(cat) values("Culturals");

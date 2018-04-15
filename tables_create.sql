@@ -6,7 +6,7 @@ create table if not exists user_info(
 	first_name varchar(20) NOT NULL,
 	last_name varchar(20),
 	entry_number varchar(20),
-	email varchar(50),
+	email varchar(20),
 	total_fine int,
 	is_admin int,
 	primary key(person_id)
@@ -24,7 +24,7 @@ create table if not exists book_info(
 	book_name varchar(250),
 	quantity int,
 	is_sem int,
-	is_reference int,
+	reference_number int,
 	ISBN varchar(20),
 	book_description text,
 	primary key(book_id)

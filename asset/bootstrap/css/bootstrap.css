@@ -1387,10 +1387,10 @@ a.bg-warning:hover {
 a.bg-danger:hover {
   background-color: #e4b9b9;
 }
-.page-header {
+.page-headerheader {
   padding-bottom: 9px;
-  margin: 40px 0 20px;
-  border-bottom: 1px solid #eee;
+  margin: 0px 20px;
+  border-bottom: 1px solid black;
 }
 ul,
 ol {

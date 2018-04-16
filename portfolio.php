@@ -117,10 +117,10 @@
                         <!-- Start Navigation List -->
                         <ul class="nav navbar-nav navbar-right">
                             <li>
-                                <a href="index.html">Home</a>
+                                <a href="index.php">Home</a>
                             </li>
                             <li>
-                                <a href="index.html#about-section">About Us</a>
+                                <a href="index.php#about-section">About Us</a>
                             </li>
                             <li>
                                 <a class="active"  href="portfolio.php">Library Management System</a>
@@ -175,22 +175,30 @@
                           </button>
                       </div>
                       <div class="navbar-collapse collapse" id="navbarCollapse">
-                           <form class="navbar-form navbar-right" method="post">
+                           <form class="navbar-form navbar-left" method="post">
                             <div class="form-group">
                                 <input type="text" id="searchBooks" placeholder="Search Books" class="form-control" style="border-color: #ccc;">
                             </div>
                                 <input type="submit" id="searchBookBtn" class="btn btn-default" value="Search" style="border-color: #ccc; margin-right: 15px;">
-                            <div class="form-group">
+                            
 <!--                                <label for="email" style="border:none; color: white;">Email: </label>-->
+                                
+                          </form>
+                          <form class="navbar-form navbar-right" method="post">
+                            <div class="form-group">
                                 <input type="text" id="username" placeholder="Username" class="form-control" style="border-color: #ccc;" name="usernameTOlogin">
                             </div>
+                               
                             <div class="form-group">
 <!--                                <label for="password" style="border:none; color: white;">Password: </label>-->
                                 <input type="password" id="password" placeholder="Password" class="form-control" name="passwordTOlogin" style="border-color: #ccc;" >
                             </div>
                                 <button  type="submit" name="loginbtn" class="btn btn-default">Login</button>
+                           
                                <a href="signup.php" class="btn btn-default">Sign UP</a>
-                               <a style="padding-left:2px">Forget Password?</a>
+                               <a style="padding-left:2px">Forgot Password?</a>
+                         </form>
+                               
                                        <?php
                                             $servername = "localhost";
                                             $username = "root";
@@ -206,10 +214,11 @@
 
                                             mysqli_select_db($conn,'library');
                                             $_SESSION["userID1"]="";
+                                            $_SESSION["login_user"]="";
                                             $_SESSION["userID2"]="";
                                             $_SESSION["userID3"]="";
                                             if (isset($_POST["loginbtn"])){
-                                                var_dump(isset($_POST["usernameTOlogin"]));
+//                                                var_dump(isset($_POST["usernameTOlogin"]));
                                                 if(isset($_POST["usernameTOlogin"])){
                                                     $sql = "SELECT * FROM authenticate WHERE user_name = '". $_POST["usernameTOlogin"] . "'";
                                                     $result = mysqli_query($conn, $sql);
@@ -218,11 +227,12 @@
                                                         $row = mysqli_fetch_assoc($result);
 //                                                        echo "<script>alert('" .row['person_id']. "');</script>";
                                                         $_SESSION["person_id"] = $row['person_id'];
-                                                        echo $row['password'];
+                                                        $_SESSION["login_user"] = $row['person_id'];
+//                                                        echo $row['password'];
                                                         $_SESSION["userID2"] = $row['password'];
                                                         if(isset($_POST["passwordTOlogin"])){
                                                             $_SESSION["userID3"] = $_POST["passwordTOlogin"];
-                                                            echo "\n".$_POST["passwordTOlogin"];
+//                                                            echo "\n".$_POST["passwordTOlogin"];
                                                             if (strcmp($_POST["passwordTOlogin"],$row['password']) == 0){
                                                                 $_SESSION["userID1"] = $_POST["usernameTOlogin"];
                                                                 $sql1 = "SELECT is_admin FROM user_info where person_id =". $row['person_id'];
@@ -249,7 +259,7 @@
 //                                                }
                                             }
                                         ?>
-                         </form>
+                         
                       </div>
                   </div>
               </nav>
@@ -272,8 +282,8 @@
                                 <div class="portfolio-item">
                                     <img src="img/book.png" class="img-responsive" style="opacity:0.8" alt="" />
                                     <div class="portfolio-caption">
-                                        <h4>Portfolio Title</h4>
-                                        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium</p>
+                                        <h4>Book Title</h4>
+                                        <p>Description and authors</p>
                                         <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
                                         <a href="#" class="link-2"><i class="fa fa-link"></i></a>
                                     </div>
@@ -285,8 +295,8 @@
                                 <div class="portfolio-item">
                                     <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
                                     <div class="portfolio-caption">
-                                        <h4>Portfolio Title</h4>
-                                        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium</p>
+                                        <h4>Book Title</h4>
+                                        <p>Description and authors</p>
                                         <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
                                         <a href="#" class="link-2"><i class="fa fa-link"></i></a>
                                     </div>
@@ -296,8 +306,8 @@
                                 <div class="portfolio-item">
                                     <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
                                     <div class="portfolio-caption">
-                                        <h4>Portfolio Title</h4>
-                                        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium</p>
+                                        <h4>Book Title</h4>
+                                        <p>Description and authors</p>
                                         <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
                                         <a href="#" class="link-2"><i class="fa fa-link"></i></a>
                                     </div>
@@ -307,8 +317,8 @@
                                 <div class="portfolio-item">
                                     <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
                                     <div class="portfolio-caption">
-                                        <h4>Portfolio Title</h4>
-                                        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium</p>
+                                        <h4>Book Title</h4>
+                                        <p>Description and authors</p>
                                         <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
                                         <a href="#" class="link-2"><i class="fa fa-link"></i></a>
                                     </div>
@@ -318,8 +328,8 @@
                                 <div class="portfolio-item">
                                     <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
                                     <div class="portfolio-caption">
-                                        <h4>Portfolio Title</h4>
-                                        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium</p>
+                                        <h4>Book Title</h4>
+                                        <p>Description and authors</p>
                                         <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
                                         <a href="#" class="link-2"><i class="fa fa-link"></i></a>
                                     </div>
@@ -329,8 +339,8 @@
                                 <div class="portfolio-item">
                                     <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
                                     <div class="portfolio-caption">
-                                        <h4>Portfolio Title</h4>
-                                        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium</p>
+                                        <h4>Book Title</h4>
+                                        <p>Description and authors</p>
                                         <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
                                         <a href="#" class="link-2"><i class="fa fa-link"></i></a>
                                     </div>

@@ -117,13 +117,13 @@
                         <!-- Start Navigation List -->
                         <ul class="nav navbar-nav navbar-right">
                             <li>
-                                <a href="index.html">Home</a>
+                                <a href="index.php">Home</a>
                             </li>
                             <li>
-                                <a href="index.html#about-section">About Us</a>
+                                <a href="index.php#about-section">About Us</a>
                             </li>
                             <li>
-                                <a class="active"  href="portfolio.php">Library Management System</a>
+                                <a class="active"  href="userLib.php">Library Management System</a>
                             </li>
                             <li>
                                 <a href="service.html">Student Activities</a>
@@ -158,7 +158,7 @@
                         <div class="col-md-12 text-center">
                             <?php
 
-                                echo "<h1>Hi, " . $_SESSION['userID1'] ." " . $_SESSION['userID2'] ." " . $_SESSION['userID3'] ." " . $_SESSION['person_id'] . "</h1>";
+                                echo "<h1>Hi, " . $_SESSION['userID1'] . "</h1>";
                             ?>
                         </div>
                     </div>
@@ -178,12 +178,96 @@
                           </button>
                       </div>
                       <div class="navbar-collapse collapse" id="navbarCollapse">
-                           <form class="navbar-form navbar-right">
-                            <div class="form-group">
-                                <input type="text" id="searchBooks" placeholder="Search Books" class="form-control" style="border-color: #ccc;">
-                            </div>
-                                <input type="submit" id="searchBookBtn" class="btn btn-default" value="Search" style="border-color: #ccc; margin-right: 15px;">
-                         </form>
+                          <form class="navbar-form navbar-right" method="post">
+                               <button  type="submit" name="logoutbtn" class="btn btn-default">Logout</button>
+                          </form>
+                           <form class="navbar-form navbar-right" method="post">
+                               <label for="searchBY">Search BY:</label>
+                                <select class="dropdown-new" id = "searchBy" style="margin-left:5px"name="selectOp[]">
+                                    <option>ISBN</option>
+                                    <option>Author</option>
+                                    <option>Title</option>
+                                </select>
+                                <div class="form-group">
+                                    <input type="text" id="searchBookstext" placeholder="Search Books" class="form-control" style="border-color: #ccc; margin-left:5px;" name="searchBookstext">
+                                </div>
+                                <button  type="submit" name="searchBooks" class="btn btn-default">Search</button>
+                          </form>
+                          
+                               <?php
+                                    $servername = "localhost";
+                                    $username = "root";
+                                    $password = "";
+
+                                    // Create connection
+                                    $conn = new mysqli($servername, $username, $password);
+
+                                    // Check connection
+                                    if ($conn->connect_error) {
+                                        die("Connection failed: " . $conn->connect_error);
+                                    }
+
+                                    mysqli_select_db($conn,'library');
+                                    
+                                    if(isset($_POST['searchBooks'])){
+                                        
+                                        foreach ($_POST['selectOp'] as $select)
+                                        {
+                                            if (isset($_POST['searchBookstext'])){
+                                                $_POST['searchBookstext'] = trim($_POST['searchBookstext']);
+                                                echo "You have selected :" .$select . "<br>" ;
+                                                if (strcmp($select,"ISBN") == 0 ){
+                                                    $sql = "SELECT * FROM book_info WHERE ISBN = '". $_POST['searchBookstext'] . "'";
+                                                    echo $sql . "<br>";
+                                                    $result = mysqli_query($conn, $sql);
+                                                    if (mysqli_num_rows($result) > 0) {
+                                                        while($row = mysqli_fetch_assoc($result)){
+                                                            echo "Book name: " . $row['book_name'] . " is_sem: " . $row['is_sem'] . "<br>";
+                                                        }
+                                                    }else {
+                                                        echo "No Result found<br>";
+                                                    }
+                                                } 
+                                                else if (strcmp($select,"Author") == 0 ){
+                                                    $sql = "SELECT * FROM book_info WHERE book_id IN (SELECT book_id FROM book_author WHERE author_id IN ( SELECT author_id FROM author WHERE author_name like '%" . $_POST['searchBookstext'] . "%') )";
+                                                    echo $sql . "<br>";
+                                                    $result = mysqli_query($conn, $sql);
+                                                    if (mysqli_num_rows($result) > 0) {
+                                                        while($row = mysqli_fetch_assoc($result)){
+                                                            echo "Book name: " . $row['book_name'] . " is_sem: " . $row['is_sem'] . "<br>";
+                                                        }
+                                                    }else {
+                                                        echo "No Result found<br>";
+                                                    }
+                                                } 
+                                                else if (strcmp($select,"Title") == 0 ){
+                                                    
+                                                    $sql = "SELECT * FROM book_info WHERE book_name  like '%" . $_POST['searchBookstext'] ."%'";
+                                                    echo $sql . "<br>";
+                                                    $result = mysqli_query($conn, $sql);
+                                                    if (mysqli_num_rows($result) > 0) {
+                                                        while($row = mysqli_fetch_assoc($result)){
+                                                            echo "Book name: " . $row['book_name'] . " is_sem: " . $row['is_sem'] . "<br>";
+                                                        }
+                                                    }else {
+                                                        echo "No Result found<br>";
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                          
+                                    if (isset($_POST["logoutbtn"])){
+                                        var_dump(isset($_POST["logoutbtn"]));
+                                        session_unset();
+                                        session_destroy();
+                                        header('Location: portfolio.php');
+                                    }
+                          
+                                    
+                          
+                                        
+                               ?>
                       </div>
                   </div>
               </nav>
@@ -192,7 +276,9 @@
         
         
            
-        
+        <div class="text-center wow fadeInDown" data-wow-duration="2s" data-wow-delay="50ms" style="margin-top:10px">
+            <h1>Issued Books</h1>
+        </div>                  
         
         <!-- Start Portfolio Section -->
         <section id="portfolio" class="portfolio-section-1">
@@ -206,8 +292,8 @@
                                 <div class="portfolio-item">
                                     <img src="img/book.png" class="img-responsive" style="opacity:0.8" alt="" />
                                     <div class="portfolio-caption">
-                                        <h4>Portfolio Title</h4>
-                                        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium</p>
+                                        <h4>Book Title</h4>
+                                        <p>Description and authors</p>
                                         <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
                                         <a href="#" class="link-2"><i class="fa fa-link"></i></a>
                                     </div>
@@ -219,8 +305,8 @@
                                 <div class="portfolio-item">
                                     <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
                                     <div class="portfolio-caption">
-                                        <h4>Portfolio Title</h4>
-                                        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium</p>
+                                        <h4>Book Title</h4>
+                                        <p>Description and authors</p>
                                         <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
                                         <a href="#" class="link-2"><i class="fa fa-link"></i></a>
                                     </div>
@@ -230,8 +316,8 @@
                                 <div class="portfolio-item">
                                     <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
                                     <div class="portfolio-caption">
-                                        <h4>Portfolio Title</h4>
-                                        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium</p>
+                                        <h4>Book Title</h4>
+                                        <p>Description and authors</p>
                                         <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
                                         <a href="#" class="link-2"><i class="fa fa-link"></i></a>
                                     </div>
@@ -241,8 +327,8 @@
                                 <div class="portfolio-item">
                                     <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
                                     <div class="portfolio-caption">
-                                        <h4>Portfolio Title</h4>
-                                        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium</p>
+                                        <h4>Book Title</h4>
+                                        <p>Description and authors</p>
                                         <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
                                         <a href="#" class="link-2"><i class="fa fa-link"></i></a>
                                     </div>
@@ -252,8 +338,8 @@
                                 <div class="portfolio-item">
                                     <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
                                     <div class="portfolio-caption">
-                                        <h4>Portfolio Title</h4>
-                                        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium</p>
+                                        <h4>Book Title</h4>
+                                        <p>Description and authors</p>
                                         <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
                                         <a href="#" class="link-2"><i class="fa fa-link"></i></a>
                                     </div>
@@ -263,8 +349,8 @@
                                 <div class="portfolio-item">
                                     <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
                                     <div class="portfolio-caption">
-                                        <h4>Portfolio Title</h4>
-                                        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium</p>
+                                        <h4>Book Title</h4>
+                                        <p>Description and authors</p>
                                         <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
                                         <a href="#" class="link-2"><i class="fa fa-link"></i></a>
                                     </div>

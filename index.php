@@ -1,4 +1,9 @@
 <!doctype html>
+<?php
+    @ob_start();
+    session_start();
+            
+?>
 <html lang="en">
 
     <head>
@@ -134,7 +139,13 @@
                                 <a href="#about-section">About Us</a>
                             </li>
                             <li>
-                                <a href="portfolio.php">Library Management System</a>
+                                <?php
+                                    if (isset($_SESSION['login_user']) && !empty($_SESSION['login_user'])){
+                                        echo "<a href='userLib.php'>Library Management System</a>";
+                                    }else{
+                                        echo "<a href='portfolio.php'>Library Management System</a>";
+                                    }
+                                ?>
                             </li>
                             <li>
                                 <a href="service.html">Student Activities</a>

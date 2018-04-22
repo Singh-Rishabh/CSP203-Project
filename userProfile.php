@@ -130,13 +130,6 @@
                             </li>
                             <li>
                                 <a href="blog.html">Blog</a>
-<!--
-                                <ul class="dropdown">
-                                    <li>
-                                        <a href="blog-item.html">Item Page</a>
-                                    </li>
-                                </ul>
--->
                             </li>
                             <li><a href="contact.html">Contact</a>
                             </li>
@@ -156,9 +149,7 @@
                         <div class="col-md-12 text-center">
                             <?php
 
-                                echo "<h1>Hi, " . $_SESSION['userID1'] . " " .$_SESSION['first_name']. $_SESSION['last_name']. "</h1>";
-                                $_SESSION["first_name"]=$_SESSION["first_name"];
-                                $_SESSION["last_name"]=$_SESSION["last_name"];
+                                echo "<h1>Hi, " . $_SESSION['userID1'] . "</h1>";
                             ?>
                         </div>
                     </div>
@@ -402,96 +393,73 @@
             </div>
         </div>
         
-        
-           
-        <div class="text-center wow fadeInDown" data-wow-duration="2s" data-wow-delay="50ms" style="margin-top:10px">
-            <h1>Issued Books</h1>
-        </div>                  
-        
-        <!-- Start Portfolio Section -->
-        <section id="portfolio" class="portfolio-section-1">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        
-                        <!-- Start Portfolio items -->
-                        <ul id="portfolio-list">
-                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="300ms">
-                                <div class="portfolio-item">
-                                    <img src="img/book.png" class="img-responsive" style="opacity:0.8" alt="" />
-                                    <div class="portfolio-caption">
-                                        <h4>Book Title</h4>
-                                        <p>Description and authors</p>
-                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
-                                    </div>
-                                </div>
-                            </li>
-                            
-                            
-                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="600ms">
-                                <div class="portfolio-item">
-                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
-                                    <div class="portfolio-caption">
-                                        <h4>Book Title</h4>
-                                        <p>Description and authors</p>
-                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="900ms">
-                                <div class="portfolio-item">
-                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
-                                    <div class="portfolio-caption">
-                                        <h4>Book Title</h4>
-                                        <p>Description and authors</p>
-                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="1200ms">
-                                <div class="portfolio-item">
-                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
-                                    <div class="portfolio-caption">
-                                        <h4>Book Title</h4>
-                                        <p>Description and authors</p>
-                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="1500ms">
-                                <div class="portfolio-item">
-                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
-                                    <div class="portfolio-caption">
-                                        <h4>Book Title</h4>
-                                        <p>Description and authors</p>
-                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="1800ms">
-                                <div class="portfolio-item">
-                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
-                                    <div class="portfolio-caption">
-                                        <h4>Book Title</h4>
-                                        <p>Description and authors</p>
-                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
-                                    </div>
-                                </div>
-                            </li>
-                            
-                            
-                        </ul>
-                        <!-- End Portfolio items -->
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="img">
+                        <img alt="Profile photo" class="img-responsive" src="img/rishabh.jpg" style="padding: 10% 20%;   max-width: 100%;max-height: auto; border-radius : 100%" >
+                    </div>
+                    <div class="about-text" style="text-align: center; margin-top:0px">
+                        <?php
+
+                            echo "<h3>". $_SESSION['userID1'] . "</h3>";
+                            echo "<h4 style='margin-top:5px'>". $_SESSION['first_name'] . " " . $_SESSION['last_name'] .  "</h4>";
+                        ?>
                     </div>
                 </div>
+                <div class="col-xs-8" style="margin-top: 20px">
+                    <h3 class="text-center">Issued Books</h3>
+                    <div class="col-md-6" style="margin-top: 20px">
+                          <div class="thumbnail" >
+                              <img>
+                              <h3>fff</h3>
+                              <p>aaaa</p>
+                          </div>
+                          <div class="thumbnail" >
+                              <img>
+                              <h3>fff</h3>
+                              <p>aaaa</p>
+                          </div>
+                          <div class="thumbnail" >
+                              <img>
+                              <h3>fff</h3>
+                              <p>aaaa</p>
+                          </div>
+                    </div>
+                    <div class="col-md-6" style="margin-top: 20px"  >
+                        <div class="thumbnail" >
+                              <img>
+                              <h3>fff</h3>
+                              <p>aaaa</p>
+                          </div>
+                          <div class="thumbnail">
+                              <img>
+                              <h3>fff
+                              dsvvsvs
+                              dvsvsv
+                              
+                              ddaaaaa
+                              
+                              
+                              
+                              adads</h3>
+                              <p>aaaa</p>
+                          </div>
+                          <div class="thumbnail" >
+                              <img>
+                              <h3>fff</h3>
+                              <p>aaaa</p>
+                          </div>
+                    </div>
+                    
+                </div>
+                
+                
             </div>
-        </section>
+        </div>
+                         
+        
+        <div style="height:100px"></div>
         
         
         

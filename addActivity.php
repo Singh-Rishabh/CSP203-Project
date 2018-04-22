@@ -57,6 +57,23 @@
     			background-color: #f2f2f2;
     			padding: 20px;
 			}
+			.nav-sidebar {
+  				margin-right: 20px; /* 20px padding + 1px border */
+ 			    margin-bottom: 20px;
+  				margin-left: -20px;
+			}
+			.nav-sidebar > li > a {
+  				padding-right: 50px;
+  				padding-left: 50px;
+			}
+			.nav-sidebar > .active > a,
+			.nav-sidebar > .active > a:hover,
+			.nav-sidebar > .active > a:focus {
+  				color: #fff;
+  				background-color: #428bca;
+			}
+			
+            
 		</style>
         
         
@@ -170,18 +187,23 @@
         <!-- End Header Section -->
     <div class="container-fluid">
         <div class="row">
-            <div class="sidebar col-sm-3" style="color: red" >
-	                <ul>
-                <li class="active" ><a href="StudentActivity.php?type=New">New</a></li>
-                <li><a href="StudentActivity.php?type=General">General</a></li>
-                <li><a href="StudentActivity.php?type=Culturals">Culturals</a></li>
-                <li><a href="StudentActivity.php?type=Sports">Sports</a></li>
-                <li><a href="StudentActivity.php?type=Tech">Technical Clubs</a></li>
-                <li><a href="StudentActivity.php?type=T&P">T&P</a></li>
-                <li><a href="addActivity.php">Add Event</a></li>
+            <div class="sidebar col-sm-2" style="color: red" >
+	                <ul class="nav nav-sidebar">
+	            <li><form action="StudentActivity.php" method="POST">
+	            		<input type="text" name='Search' placeholder="Search..">
+	            		<div class='wrapper'><button type="submit" name="search"">Search</button></div>
+	            	</form>
+	            </li>
+                <li name="New"><a href="StudentActivity.php?type=New">New</a></li>
+                <li name="General"><a href="StudentActivity.php?type=General">General</a></li>
+                <li name="Culturals"><a href="StudentActivity.php?type=Culturals">Culturals</a></li>
+                <li name="Sports"><a href="StudentActivity.php?type=Sports">Sports</a></li>
+                <li name="TechClubs"><a href="StudentActivity.php?type=Tech">Technical Clubs</a></li>
+                <li name="TP"><a href="StudentActivity.php?type=TP">T&P</a></li>
+                <li class="active" ><a href="addActivity.php">Add Event</a></li>
                 </ul>
             </div>
-            <div class="container col-md-9">
+            <div class="container col-md-10">
      			 <!-- Form for Texting-->      	
       			<form action="addActivity.php" method="post" onsubmit="return confirm('Please Check if all the fields are filled properly!');">
 	 				<label for="title">Title</label>

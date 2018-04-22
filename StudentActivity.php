@@ -41,13 +41,39 @@
         
         <!--- Inline style -->
         <style>
-            .sidebar{
-                position: static;
-                display: block;
-                color: red;
-            }
+        	.fixed{
+        		position: top;
+        	}
+            .nav-sidebar {
+  				margin-right: 20px; /* 20px padding + 1px border */
+ 			    margin-bottom: 20px;
+  				margin-left: 10px;
+			}
+			.nav-sidebar > li > a {
+  				padding-right: 10px;
+  				padding-left: 10px;
+			}
+			.nav-sidebar > .active > a,
+			.nav-sidebar > .active > a:hover,
+			.nav-sidebar > .active > a:focus {
+  				color: #fff;
+  				background-color: #428bca;
+			}
+			
+			.wrapper{
+				padding-right: 5px;
+  				padding-left: -1px; 
+			}
             
         </style>
+        
+        <!--- Java Script --->
+        <script>
+        	function setActive(x)
+        	{
+        		document.getElementsByName(x)[0].setAttribute("class","active");
+        	}
+        </script>
         
 
     </head>
@@ -69,7 +95,7 @@
         <header class="clearfix">
         
             <!-- Start  Logo & Naviagtion  -->
-            <div class="navbar navbar-default navbar-top">
+            <div class="navbar navbar-default navbar-top " >
                 <div class="container">
                     <div class="navbar-header">
                         <!-- Stat Toggle Nav Link For Mobiles -->
@@ -116,7 +142,8 @@
         
         
         <!-- Start Header Section -->
-        <div class="page-header">
+        
+        <div class="page-header ">
             <div class="overlay">
                 <div class="container">
                     <div class="row">
@@ -130,18 +157,23 @@
         <!-- End Header Section -->
     <div class="container-fluid">
         <div class="row">
-            <div class="sidebar col-sm-3" style="color: red" >
-	                <ul>
-                <li class="active" ><a href="StudentActivity.php?type=New">New</a></li>
-                <li><a href="StudentActivity.php?type=General">General</a></li>
-                <li><a href="StudentActivity.php?type=Culturals">Culturals</a></li>
-                <li><a href="StudentActivity.php?type=Sports">Sports</a></li>
-                <li><a href="StudentActivity.php?type=Tech">Technical Clubs</a></li>
-                <li><a href="StudentActivity.php?type=TP">T&P</a></li>
+            <div class="sidebar col-sm-2 " style="color: red" >
+	                <ul class="nav nav-sidebar fixed">
+	            <li><form action="StudentActivity.php" method="POST">
+	            		<input type="text" name='Search' placeholder="Search..">
+	            		<div class="wrapper"><button type="submit" name="search" style="text-align: center;">Search</button></div>
+	            	</form>
+	            </li>
+                <li name="New"><a href="StudentActivity.php?type=New">New</a></li>
+                <li name="General"><a href="StudentActivity.php?type=General">General</a></li>
+                <li name="Culturals"><a href="StudentActivity.php?type=Culturals">Culturals</a></li>
+                <li name="Sports"><a href="StudentActivity.php?type=Sports">Sports</a></li>
+                <li name="TechClubs"><a href="StudentActivity.php?type=Tech">Technical Clubs</a></li>
+                <li name="TP"><a href="StudentActivity.php?type=TP">T&P</a></li>
                 <li><a href="addActivity.php">Add Event</a></li>
                 </ul>
             </div>
-            <div class="container col-md-9">
+            <div class="container col-md-10">
                 <?php
                 		$stmt=NULL;
                 		if(isset($_GET['type']))
@@ -149,31 +181,33 @@
                 			if($_GET['type'] == 'New')
                 			{
 	               				$stmt=$conn->prepare("Select * from event Order by event_id DESC");
+	               				echo "<script>setActive('New')</script>";
 	               				
                 			}
                 			else if($_GET['type'] == 'General')
                 			{
                 				$stmt=$conn->prepare("Select * from event where event_id in (Select event_id from reference where cat_id = (select cat_id from category where cat = \"General\")) Order by event_id DESC");
+                				echo "<script>setActive('General')</script>";
                 			}
                 			else if($_GET['type'] == 'Sports')
                 			{
                 				$stmt=$conn->prepare("Select * from event where event_id in (Select event_id from reference where cat_id = (select cat_id from category where cat = \"Sports\")) Order by event_id DESC");
+                				echo "<script>setActive('Sports')</script>";
                 			}
                 			else if($_GET['type'] == 'Culturals')
                 			{
                 				$stmt=$conn->prepare("Select * from event where event_id in (Select event_id from reference where cat_id = (select cat_id from category where cat = \"Culturals\")) Order by event_id DESC");
-                			}
-                			else if($_GET['type'] == 'Culturals')
-                			{
-                				$stmt=$conn->prepare("Select * from event where event_id in (Select event_id from reference where cat_id = (select cat_id from category where cat = \"Culturals\")) Order by event_id DESC");
+                				echo "<script>setActive('Culturals')</script>";
                 			}
                 			else if($_GET['type'] == 'Tech')
                 			{
                 				$stmt=$conn->prepare("Select * from event where event_id in (Select event_id from reference where cat_id = (select cat_id from category where cat = \"Technical Clubs\")) Order by event_id DESC");
+                				echo "<script>setActive('TechClubs')</script>";
                 			}
                 			else if($_GET['type'] == 'TP')
                 			{
                 				$stmt=$conn->prepare("Select * from event where event_id in (Select event_id from reference where cat_id = (select cat_id from category where cat = \"T&P\")) Order by event_id DESC");
+                				echo "<script>setActive('TP')</script>";
                 			}
                 		}
                 		if($stmt!=NULL)
@@ -197,6 +231,37 @@
                 			}
                 		
                 		}
+                ?>
+                <?php
+                	if(isset($_POST['Search']) && !empty($_POST['Search']))
+                		{
+                			$stmt = NULL;
+                			$search = $_POST['Search'];
+                			$cmd="Select * from event where title like '%".$search."%'";
+                			$stmt=$conn->prepare($cmd);
+                			if($stmt!=NULL)
+                			{
+                				$stmt->execute();
+                				$stmt->bind_result($id,$title,$desc);
+                				if(!$stmt->fetch())
+                				{
+                					echo "<center><p><big>~~No Events To show~~</big></p></center>";
+                				}
+                				else
+                				{
+                					do
+                					{
+                						echo"<div class=\"panel panel-info\">".
+  												"<div class=\"panel-heading\">".$title."</div>".
+  												"<div class=\"panel-body\">".$desc."</div>".
+  											"</div>";
+                					}while($stmt->fetch());
+                				
+                				}
+                			
+                			}	
+                		}
+                
                 ?>
             </div>
         </div>

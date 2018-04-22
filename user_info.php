@@ -86,33 +86,94 @@
 
     </head>
 	<body>
-		<form class="navbar-form navbar-left">
-			<div class="dropdown">
-			  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Search by ** 
-			  <span class="caret"></span></button>
-			  <ul class="dropdown-menu">
-			    <li><a href="?username">username</a></li>
-			    <li><a href="?entry_number">UserID</a></li>
-			  </ul>
-			  <input name="searchusers" type="text" id="searchusers" placeholder="Search users" class="form-control" style="border-color: #ccc;" required>
-			  <input type="submit" name ="searchuserBtn"  id="searchuserBtn" class="btn btn-default" value="Search" style="border-color: #ccc; margin-right: 15px;">
-			</div>		  	
-		</form>
+        <div class="container-fluid">
+    		<form class="navbar-form navbar-center" method = "post">
+    			<div class="dropdown">
+    			  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Search by ** 
+    			  <span class="caret"></span></button>
+    			  <ul class="dropdown-menu">
+    			    <li><a href="?username">username</a></li>
+    			    <li><a href="?entry_number">Entry Number</a></li>
+                    <li><a href="?first_name">Name</a></li>
+    			  </ul>
+    			  <input name="searchusers" type="text" id="searchusers" placeholder="Search users" class="form-control" style="border-color: #ccc;" required>
+    			  <input type="submit" name ="searchuserBtn"  id="searchuserBtn" class="btn btn-default" value="Search" style="border-color: #ccc; margin-right: 15px;">
+    			</div>		  	
+    		</form>
+        </div>
 
 		<?php
+            //echo "Before all the isset<br\>";
+            $result = null;
 			if(isset($_POST['searchuserBtn'])){
-				if(isset($_POST['username'])){
+               // echo "button has been pressed <br\>";
+				if(isset($_GET['username'])){
+                    //echo "username is active<br\>";
 					if(isset($_POST['searchusers'])){
-						$sql = "SELECT * from user_info where username like '%'".$_POST['searchusers']."'%";
+						$sql = "SELECT * from user_info inner join authenticate on user_info.person_id = authenticate.person_id where user_name like '%".$_POST['searchusers']."%'";
+                        //echo $sql;
 						$result = mysqli_query($conn,$sql);
+
 
 					}
 				}
-				else if(isset($_POST['entry_number'])){
+				else if(isset($_GET['entry_number'])){
+                    if(isset($_POST['searchusers'])){
+                        $sql = "SELECT * from user_info inner join authenticate on user_info.person_id = authenticate.person_id where entry_number = \"".$_POST['searchusers']."\"";
+                        //echo $sql;
+                        $result = mysqli_query($conn,$sql);
+                    }
 
 
 				}
+                else if(isset($_GET['first_name'])){
+                    if(isset($_POST['searchusers'])){
+                        $sql = "SELECT * from user_info inner join authenticate on user_info.person_id = authenticate.person_id where first_name like '%".$_POST['searchusers']."%'";
+                        //echo $sql;
+                        $result = mysqli_query($conn,$sql);
+
+                    }   
+
+                }
+                echo "<div class=\"table-responsive\">";
+                echo "<table class=\"table\">";
+                echo "<thead><tr>";
+                $count = 0;
+                echo "<th>#</th>";
+                echo "<th>Firstname</th>";
+                echo "<th>Lastname</th>";
+                echo "<th>Link to Profile</th></tr></thead><tbody>";
+                while($row = mysqli_fetch_assoc($result)){
+                    $count = $count + 1;
+                    echo "<tr>
+                            <td>".$count."</td>".
+                            "<td>".$row['first_name']."</td>".
+                            "<td>".$row['last_name']."</td>".
+                            "<td><a href=\"?".$row['user_name']."\">".
+                                "For more information".
+                            "</a>
+                            </td>
+                        </tr>";        
+                }
+                echo "</tbody></ul></div>";
+
+
 			}
+            $actual_link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+            //echo $actual_link."<br>";
+
+                
+            $query_string = parse_url($actual_link, PHP_URL_QUERY);
+            //echo $query_string."<br>";
+            if(strcmp($query_string,"") and strcmp($query_string,"first_name") and strcmp($query_string,"entry_number") and strcmp($query_string,"username")){
+                
+                    echo "<script>alert('Redirecting the page');</script>";
+                    $_SESSION['userID1'] = $query_string;
+                    header("Refresh: 0; url=userProfile.php");
+
+                
+
+            }
 
 		?>
 	</body>

@@ -64,7 +64,7 @@
 				padding-right: 5px;
   				padding-left: -1px; 
 			}
-            
+			            
         </style>
         
         <!--- Java Script --->
@@ -225,6 +225,7 @@
                 					echo"<div class=\"panel panel-info\">".
   											"<div class=\"panel-heading\">".$title."</div>".
   											"<div class=\"panel-body\">".$desc."</div>".
+  											"<div class=\"panel-footer\"> <a href = 'StudentActivity.php?pid=".$id."')'>Delete</a></div>".
   										"</div>";
                 				}while($stmt->fetch());
                 			
@@ -262,6 +263,17 @@
                 			}	
                 		}
                 
+                ?>
+                <?php
+                	if(isset($_GET['pid']))
+                	{
+                		$event_id=$_GET['pid'];
+                		$stmt=$conn->prepare("Delete from event where event_id=?");
+                		$stmt->bind_param('i',$event_id);
+                		$stmt->execute();
+                		echo "<script>javascript:window.location = document.referrer</script>";
+                		exit;
+                	}
                 ?>
             </div>
         </div>

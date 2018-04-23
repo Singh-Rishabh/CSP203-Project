@@ -49,8 +49,7 @@ if(mysqli_num_rows($res) > 0){
 
 echo "<form action ='edit_post.php?pid=$pid' method ='post' enctype = 'multipart/from-data'>";
 echo " <input placeholder ='Title' name='title' type='text' value='$title' autofocus size='48'><br /><br />";
-echo " <textarea placeholder='Content' name='content' rows='20' cols='50'>$content</textarea><br />";
-	
+echo " <textarea placeholder='Content' name='content' rows='20' cols='50'>$content</textarea><br />";	
 }
 ?>
       <input name="update" type="submit" value="Update">

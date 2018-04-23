@@ -214,9 +214,9 @@
 
                                             mysqli_select_db($conn,'library');
                                             $_SESSION["userID1"]="";
-                                            $_SESSION["login_user"]="";
-                                            $_SESSION["userID2"]="";
-                                            $_SESSION["userID3"]="";
+//                                            $_SESSION["login_user"]="";
+                                            $_SESSION["first_name"]="";
+                                            $_SESSION["last_name"]="";
                                             if (isset($_POST["loginbtn"])){
 //                                                var_dump(isset($_POST["usernameTOlogin"]));
                                                 if(isset($_POST["usernameTOlogin"])){
@@ -227,17 +227,21 @@
                                                         $row = mysqli_fetch_assoc($result);
 //                                                        echo "<script>alert('" .row['person_id']. "');</script>";
                                                         $_SESSION["person_id"] = $row['person_id'];
-                                                        $_SESSION["login_user"] = $row['person_id'];
+//                                                        $_SESSION["login_user"] = $row['person_id'];
 //                                                        echo $row['password'];
-                                                        $_SESSION["userID2"] = $row['password'];
+//                                                        $_SESSION["userID2"] = $row['password'];
                                                         if(isset($_POST["passwordTOlogin"])){
-                                                            $_SESSION["userID3"] = $_POST["passwordTOlogin"];
+//                                                            $_SESSION["userID3"] = $_POST["passwordTOlogin"];
 //                                                            echo "\n".$_POST["passwordTOlogin"];
                                                             if (strcmp($_POST["passwordTOlogin"],$row['password']) == 0){
                                                                 $_SESSION["userID1"] = $_POST["usernameTOlogin"];
-                                                                $sql1 = "SELECT is_admin FROM user_info where person_id =". $row['person_id'];
+                                                                $sql1 = "SELECT is_admin ,first_name ,last_name FROM user_info where person_id =". $row['person_id'];
+//                                                                echo $sql1;
                                                                 $result1 = mysqli_query($conn, $sql1);
                                                                 $row1 = mysqli_fetch_assoc($result1);
+                                                                $_SESSION["first_name"]=$row1['first_name'];
+                                                                $_SESSION["last_name"]=$row1['last_name'];
+//                                                                echo $row1['last_name'] . " " . $row1['first_name'] ;
                                                                 if ($row1['is_admin'] == 0){
                                                                     header('Location: userLib.php');
                                                                 }else {

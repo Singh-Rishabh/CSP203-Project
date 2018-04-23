@@ -112,7 +112,7 @@
                         <!-- End Toggle Nav Link For Mobiles -->
                         <a class="navbar-brand" href="#"><img src="img/iitrprlogo.jpg" style="max-height: 40px;max-width: 40px; margin-top: -10px;"></a>
                     </div>
-                    <div class="navbar-collapse collapse">
+                    <div class="navbar  -collapse collapse">
                         
                         <!-- Start Navigation List -->
                         <ul class="nav navbar-nav navbar-right">
@@ -156,7 +156,7 @@
                         <div class="col-md-12 text-center">
                             <?php
 
-                                echo "<h1>Hi, " . $_SESSION['userID1'] . " " .$_SESSION['first_name']. $_SESSION['last_name']. "</h1>";
+                                echo "<h1>Hi, " . $_SESSION['userID1'] . "</h1>";
                                 $_SESSION["first_name"]=$_SESSION["first_name"];
                                 $_SESSION["last_name"]=$_SESSION["last_name"];
                             ?>
@@ -218,16 +218,18 @@
                                         {
                                             if (isset($_POST['searchBookstext'])){
                                                 $_POST['searchBookstext'] = trim($_POST['searchBookstext']);
-                                                echo "You have selected :" .$select . "<br>" ;
+//                                                echo "You have selected :" .$select . "<br>" ;
                                                 if (strcmp($select,"ISBN") == 0 ){
                                                     $sql = "SELECT * FROM book_info WHERE ISBN = '". $_POST['searchBookstext'] . "'";
-                                                    echo $sql . "<br>";
+//                                                    echo $sql . "<br>";
                                                     $result = mysqli_query($conn, $sql);
                                                     if (mysqli_num_rows($result) > 0) {
                                                         while($row = mysqli_fetch_assoc($result)){
-                                                            echo "Book name: " . $row['book_name'] . " is_sem: " . $row['is_sem'] . "<br>";
+//                                                            echo "Book name: " . $row['book_name'] . " is_sem: " . $row['is_sem'] . "<br>";
                                                             $authorName= "";
                                                             $bookname = $row['book_name'];
+                                                            $book_id = $row['book_id'];
+//                                                            echo "fefa ff ".$book_id;
                                                             $authorsql = "SELECT author_name FROM author INNER JOIN book_author ON book_author.author_id = author.author_id INNER JOIN book_info ON book_info.book_id = book_author.book_id WHERE book_info.ISBN = '". $_POST['searchBookstext'] . "'";
                                                             $authroResult = mysqli_query($conn, $authorsql);
                                                             $count = mysqli_num_rows($authroResult);
@@ -253,10 +255,11 @@
                                                                                     <div class="portfolio-item">
                                                                                         <img src="img/book.png" class="img-responsive" style="opacity:0.8" alt="" />
                                                                                         <div class="portfolio-caption">
-                                                                                            <h4>'. $bookname .'</h4>
+                                                                                        
+                                                                                            <h4>'. $bookname .'cndskvndsivkdivn</h4>
                                                                                             <p>Author: ' .$authorName . '</p>
                                                                                             <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                                                                            <a href="#" class="link-2"><i class="fa fa-link"></i></a>
+                                                                                            <a href="userLib.php?book_id_URL='.$book_id . '" class="link-2" title = "Issue Book"><i class="fa fa-link"></i></a>
                                                                                         </div>
                                                                                     </div>
                                                                                 </li>
@@ -274,7 +277,8 @@
                                                 } 
                                                 else if (strcmp($select,"Author") == 0 ){
                                                     $sql = "SELECT * FROM book_info WHERE book_id IN (SELECT book_id FROM book_author WHERE author_id IN ( SELECT author_id FROM author WHERE author_name like '%" . $_POST['searchBookstext'] . "%') )";
-                                                    echo $sql . "<br>";
+//                                                    echo $sql . "<br>";
+                                                    
                                                     $result = mysqli_query($conn, $sql);
                                                     if (mysqli_num_rows($result) > 0) {
                                                         echo '<section id="portfolio" class="portfolio-section-1">
@@ -288,6 +292,7 @@
 //                                                            echo "Book name: " . $row['book_name'] . " is_sem: " . $row['is_sem'] . "<br>";
                                                             $authorName= "";
                                                             $bookname = $row['book_name'];
+                                                            $book_id = $row['book_id'];
                                                             $authorsql = "SELECT author_name FROM author INNER JOIN book_author ON book_author.author_id = author.author_id INNER JOIN book_info ON book_info.book_id = book_author.book_id WHERE book_info.book_id = ". $row['book_id'];
                                                             $authroResult = mysqli_query($conn, $authorsql);
                                                             $count = mysqli_num_rows($authroResult);
@@ -309,8 +314,7 @@
                                                                         <h4>'. $bookname .'</h4>
                                                                         <p>Author: ' .$authorName . '</p>
                                                                         <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
-                                                                    </div>
+                                                                        <a href="userLib.php?book_id_URL='.$book_id . '" class="link-2"><i class="fa fa-link" title = "Issue Book"></i></a>                                                                    </div>
                                                                 </div>
                                                             </li>';
                                                                                 
@@ -329,7 +333,7 @@
                                                 else if (strcmp($select,"Title") == 0 ){
                                                     
                                                     $sql = "SELECT * FROM book_info WHERE book_name  like '%" . $_POST['searchBookstext'] ."%'";
-                                                    echo $sql . "<br>";
+//                                                    echo $sql . "<br>";
                                                     $result = mysqli_query($conn, $sql);
                                                     if (mysqli_num_rows($result) > 0) {
                                                         echo '<section id="portfolio" class="portfolio-section-1">
@@ -343,6 +347,7 @@
 //                                                            echo "Book name: " . $row['book_name'] . " is_sem: " . $row['is_sem'] . "<br>";
                                                             $authorName= "";
                                                             $bookname = $row['book_name'];
+                                                            $book_id = $row['book_id'];
                                                             $authorsql = "SELECT author_name FROM author INNER JOIN book_author ON book_author.author_id = author.author_id INNER JOIN book_info ON book_info.book_id = book_author.book_id WHERE book_info.book_id = ". $row['book_id'];
                                                             $authroResult = mysqli_query($conn, $authorsql);
                                                             $count = mysqli_num_rows($authroResult);
@@ -364,8 +369,7 @@
                                                                         <h4>'. $bookname .'</h4>
                                                                         <p>Author: ' .$authorName . '</p>
                                                                         <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
-                                                                    </div>
+                                                                        <a href="userLib.php?book_id_URL='.$book_id . '" class="link-2"><i class="fa fa-link" title = "Issue Book"></i></a>                                                                    </div>
                                                                 </div>
                                                             </li>';
                                                                                 
@@ -391,8 +395,15 @@
                                         session_destroy();
                                         header('Location: portfolio.php');
                                     }
-                          
-                                    
+                                    $issueBook = false;
+                                    if(isset($_GET['book_id_URL'])){
+                                        echo "<script>var issueBook = window.confirm('Are You sure to issue this book?');
+                                            if(issueBook == true){
+                                                alert('You book has been issued');
+                                            }
+                                                </script>";
+                                        header('Location: userLib.php');
+                                    }
                           
                                         
                                ?>
@@ -422,8 +433,10 @@
                                     <div class="portfolio-caption">
                                         <h4>Book Title</h4>
                                         <p>Description and authors</p>
+<!--
                                         <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
                                         <a href="#" class="link-2"><i class="fa fa-link"></i></a>
+-->
                                     </div>
                                 </div>
                             </li>
@@ -435,8 +448,10 @@
                                     <div class="portfolio-caption">
                                         <h4>Book Title</h4>
                                         <p>Description and authors</p>
+<!--
                                         <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
                                         <a href="#" class="link-2"><i class="fa fa-link"></i></a>
+-->
                                     </div>
                                 </div>
                             </li>
@@ -446,8 +461,10 @@
                                     <div class="portfolio-caption">
                                         <h4>Book Title</h4>
                                         <p>Description and authors</p>
+<!--
                                         <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
                                         <a href="#" class="link-2"><i class="fa fa-link"></i></a>
+-->
                                     </div>
                                 </div>
                             </li>
@@ -457,8 +474,10 @@
                                     <div class="portfolio-caption">
                                         <h4>Book Title</h4>
                                         <p>Description and authors</p>
+<!--
                                         <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
                                         <a href="#" class="link-2"><i class="fa fa-link"></i></a>
+-->
                                     </div>
                                 </div>
                             </li>
@@ -468,8 +487,10 @@
                                     <div class="portfolio-caption">
                                         <h4>Book Title</h4>
                                         <p>Description and authors</p>
+<!--
                                         <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
                                         <a href="#" class="link-2"><i class="fa fa-link"></i></a>
+-->
                                     </div>
                                 </div>
                             </li>
@@ -479,8 +500,10 @@
                                     <div class="portfolio-caption">
                                         <h4>Book Title</h4>
                                         <p>Description and authors</p>
+<!--
                                         <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
                                         <a href="#" class="link-2"><i class="fa fa-link"></i></a>
+-->
                                     </div>
                                 </div>
                             </li>

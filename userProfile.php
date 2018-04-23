@@ -409,6 +409,44 @@
                 </div>
                 <div class="col-xs-8" style="margin-top: 20px">
                     <h3 class="text-center">Issued Books</h3>
+                    <?php
+                        $sql = "SELECT user_books.fine , user_books.date_return, book_info.book_name FROM user_books INNER JOIN book_info ON book_info.book_id = user_books.book_id WHERE person_id = ". $_SESSION['person_id'];
+//                        echo $sql;
+                        $result = mysqli_query($conn, $sql);
+                        $count = mysqli_num_rows($result);
+                        $total_fine = 0;
+                        if ($count > 0){
+                            echo '<div class="col-md-6" style="margin-top: 20px">';
+                            $i = 0;
+//                            echo $count . "ddddddddddd";    
+                            while($i < ($count/2) and $row = mysqli_fetch_assoc($result)){
+                                echo '<div class="thumbnail" >
+                                      <img>
+                                      <h3>'.$row['book_name'] .'</h3>
+                                      <p style="margin-top: 10px">Fine: ' . $row['fine'].'<br>
+                                      Return Date: ' . $row['date_return'].'</p>
+                                  </div>';
+                                $total_fine = $total_fine + $row['fine'];
+                                $i = $i + 1;
+                            }echo '</div>';
+                            echo '<div class="col-md-6" style="margin-top: 20px" >';
+                            while($i >= ($count/2) and $row = mysqli_fetch_assoc($result) ){
+                                echo '<div class="thumbnail" >
+                                      <img>
+                                      <h3>'.$row['book_name'] .'</h3>
+                                      <p style="margin-top: 10px">Fine: ' . $row['fine'].'<br>
+                                      Return Date: ' . $row['date_return'].'</p>
+                                  </div>';
+                                $total_fine = $total_fine + $row['fine'];
+                                $i = $i + 1;
+                            }echo '</div>';
+                                
+                        }
+                        echo '<div class="col-md-12" style="margin-top: 20px" ><p>Total Fine : ' . $total_fine. '</p></div>'
+                        
+                    ?>
+                    
+<!--
                     <div class="col-md-6" style="margin-top: 20px">
                           <div class="thumbnail" >
                               <img>
@@ -453,6 +491,7 @@
                     </div>
                     
                 </div>
+-->
                 
                 
             </div>

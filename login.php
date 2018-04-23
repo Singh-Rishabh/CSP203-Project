@@ -31,9 +31,9 @@ if(isset($_POST['login'])){
 		} else{
 			echo"Incorrect details ";
 		}
-}
-
-
+}echo"new user?";
+		$newuser = "<div><h3><a href='register.php'>Register</a></h3></div>";
+		echo"$newuser";
 ?>
 
 <!DOCTYPE html>

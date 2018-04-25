@@ -257,6 +257,7 @@
                         echo "<th>#</th>";
                         echo "<th>Firstname</th>";
                         echo "<th>Lastname</th>";
+                        echo "<th>Total Fine</th>";
                         echo "<th>Link to Profile</th></tr></thead><tbody>";
                         while($row = mysqli_fetch_assoc($result)){
                             $count = $count + 1;
@@ -264,10 +265,12 @@
                                     <td>".$count."</td>".
                                     "<td>".$row['first_name']."</td>".
                                     "<td>".$row['last_name']."</td>".
+                                    "<td>".$row['total_fine']."</td>".
                                     "<td><a href=\"?userID=".$row['user_name']."\">".
                                         "For more information".
                                     "</a>
                                     </td>
+
                                 </tr>";        
                         }
                         echo "</tbody></ul></table></div>";
@@ -290,7 +293,7 @@
             if(isset($_GET['userID'])){
                 if(strcmp($_GET['userID'],"")){
                         echo "<script>alert('Redirecting the page');</script>";
-                        $_SESSION['userID1'] = $_GET['userID'];
+                        $_SESSION['userID2'] = $_GET['userID'];
                         header("Location:userProfile.php");
                 }
             }

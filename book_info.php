@@ -211,61 +211,17 @@
             
         </div>
 
-
-        <?php
-                    
-            function writeTables($book_id,$conn){
-                $sql = 'select * from user_books inner join user_info on user_info.person_id = user_books.person_id where book_id ='.$book_id;
-                //echo $sql."<br>";
-                $result = mysqli_query($conn,$sql);
-                if(mysqli_num_rows($result)){
-                    echo "<div class=\"table-responsive\" style=\"margin:5%\">";
-                    echo "<table class=\"table\" id=\"myTable1\">";
-                    echo "<thead><tr>";
-                    echo "<th>#</th>";
-                    echo "<th onclick=\"sortTable(0,'myTable1')\">First name</th>";
-                    echo "<th onclick=\"sortTable(1,'myTable1')\">Last name</th>
-                            <th onclick=\"sortTable(2,'myTable1')\">Fine on this book</th>
-                            <th onclick=\"sortTable(3,'myTable1')\">E-mail</th>
-                            <th onclick=\"sortTable(4,myTable1')\">Date-withrawn</th>
-                            <th onclick=\"sortTable(5,'myTable1')\">Date-Due</th>
-                            <th> Request mail </th>
-                            </tr></thead><tbody>";
-                    $count = 0;
-                    while($row = mysqli_fetch_assoc($result)){
-                        echo "<tr>
-                                <td>".$count."</td>".
-                                "<td>".$row['first_name']."</td>".
-                                "<td>".$row['last_name']."</td>".
-                                "<td>".$row['fine']."</td>".
-                                "<td>".$row['email']."</td>".
-                                "<td>".$row['date_withdrawn']."</td>".
-                                "<td>".$row['due_date']."</td>".
-                                "<td>".
-                                    "<div class=\"container-fluid\">
-                                           <input type=\"button\"  name = \"toemail\"  id=\"e".$row['book_id']."\" class=\"btn btn-default\" value=\"Send request mail\" style=\"border-color: #ccc; margin-right: 15px;\">
-                                     </div>
-                                 </td>".
-                             "</tr>";
-                        $count = $count + 1;
-                    }
-                    echo "</tbody></ul></table></div>";
-                }
-                else{
-                    echo "<h2 style=\"text-align:center;margin:5%\"> There are no Transactions.</h2>";
-                }
-                
-            }
-        ?>
-
-        <div id="tableModal" class = "Modal">
-
+        <div class="modal" id="tableModal1">
+        	<div class="modal-content" id="tableModal"></div>
         </div>
+        
+
+        
 
 
 		<?php
             //echo "Before all the isset<br\>";
-            $books_list = array();
+           
             
 			if(isset($_POST['searchuserBtn'])){
                 //echo "button has been pressed <br>";
@@ -307,14 +263,7 @@
                     
                     
                     if(mysqli_num_rows($result1)){
-                        while($row1 = mysqli_fetch_assoc($result1)){
-                            echo "<div id=\"".$row1['book_id']."\" class=\"modal\">";
-                            echo "<div class=\"modal-content\">";
-                            writeTables($row1['book_id'],$conn);
-                            echo '<span class="close" id="close'.$row1['book_id'].'">&times;</span>';
-                            echo '</div>';
-                            echo "</div>";
-                        }
+                        
                         echo "<div class=\"table-responsive\" style=\"margin:5%\">";
                         echo "<table class=\"table\" id=\"myTable\">";
                         echo "<thead><tr>";
@@ -328,14 +277,14 @@
                         //echo "<th>Link to Profile</th></tr></thead><tbody>";
 
                         while($row = mysqli_fetch_assoc($result)){
-                            array_push($books_list, $row['book_id']);
+                           
                             $count = $count + 1;
                             echo "<tr>
                                     <td>".$count."</td>".
                                     "<td>".$row['book_name']."</td>".
                                     "<td>".$row['author_name']."</td>".
                                     "<td>
-                                       <div class=\"container-fluid\" onclick=\"myfunc('".$row['book_id']."','s".$row['book_id']."','close".$row['book_id']."')\">
+                                       <div class=\"container-fluid\" onclick = \"myfunc2('".$row['book_id']."','s".$row['book_id']."')\" >
                                        <input type=\"button\"  name =\"clicked['".$row['book_id']."']\"  id=\"s".$row['book_id']."\" class=\"btn btn-default\" value=\"View Transactions\" style=\"border-color: #ccc; margin-right: 15px;\">
                                        </div>
                                     </td>
@@ -543,6 +492,21 @@
                 }
             </script>
 
+            <script>
+            function myfunc2(book_id,btnid){
+                console.log("transactions.php?book_id="+book_id);
+               
+                $.ajax({
+                	url: "transactions.php?book_id="+book_id,
+         			
+                	success: function(result){
+                		$("#tableModal").html("");
+        				$("#tableModal").html(result +"<span class=close id=close>&times;</span>");
+    			}});
+    			myfunc("tableModal1",btnid,"close");
+
+            }
+            </script>
 
 
         <section id="footer-section" class="footer-section">

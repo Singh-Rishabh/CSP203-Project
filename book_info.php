@@ -212,6 +212,56 @@
         </div>
 
 
+        <?php
+                    
+            function writeTables($book_id,$conn){
+                $sql = 'select * from user_books inner join user_info on user_info.person_id = user_books.person_id where book_id ='.$book_id;
+                //echo $sql."<br>";
+                $result = mysqli_query($conn,$sql);
+                if(mysqli_num_rows($result)){
+                    echo "<div class=\"table-responsive\" style=\"margin:5%\">";
+                    echo "<table class=\"table\" id=\"myTable1\">";
+                    echo "<thead><tr>";
+                    echo "<th>#</th>";
+                    echo "<th onclick=\"sortTable(0,'myTable1')\">First name</th>";
+                    echo "<th onclick=\"sortTable(1,'myTable1')\">Last name</th>
+                            <th onclick=\"sortTable(2,'myTable1')\">Fine on this book</th>
+                            <th onclick=\"sortTable(3,'myTable1')\">E-mail</th>
+                            <th onclick=\"sortTable(4,myTable1')\">Date-withrawn</th>
+                            <th onclick=\"sortTable(5,'myTable1')\">Date-Due</th>
+                            <th> Request mail </th>
+                            </tr></thead><tbody>";
+                    $count = 0;
+                    while($row = mysqli_fetch_assoc($result)){
+                        echo "<tr>
+                                <td>".$count."</td>".
+                                "<td>".$row['first_name']."</td>".
+                                "<td>".$row['last_name']."</td>".
+                                "<td>".$row['fine']."</td>".
+                                "<td>".$row['email']."</td>".
+                                "<td>".$row['date_withdrawn']."</td>".
+                                "<td>".$row['due_date']."</td>".
+                                "<td>".
+                                    "<div class=\"container-fluid\">
+                                           <input type=\"button\"  name = \"toemail\"  id=\"e".$row['book_id']."\" class=\"btn btn-default\" value=\"Send request mail\" style=\"border-color: #ccc; margin-right: 15px;\">
+                                     </div>
+                                 </td>".
+                             "</tr>";
+                        $count = $count + 1;
+                    }
+                    echo "</tbody></ul></table></div>";
+                }
+                else{
+                    echo "<h2 style=\"text-align:center;margin:5%\"> There are no Transactions.</h2>";
+                }
+                
+            }
+        ?>
+
+        <div id="tableModal" class = "Modal">
+
+        </div>
+
 
 		<?php
             //echo "Before all the isset<br\>";
@@ -227,45 +277,56 @@
     						$sql = "SELECT * from book_info inner join book_author on book_info.book_id = book_author.book_id inner join author on author.author_id = book_author.author_id where ISBN = ".$_POST['searchbooks'];
                             //echo $sql;
     						$result = mysqli_query($conn,$sql);
-
+                            $result1 = mysqli_query($conn,$sql);
 
 
     					}
     				}
     				else if($_POST['taskOption1']=="name"){
                         if(isset($_POST['searchbooks'])){
-                            echo "the value is ".$_POST['searchbook']."<br>";
+                            //echo "the value is ".$_POST['searchbook']."<br>";
                             $sql = "SELECT * from book_info inner join book_author on book_info.book_id = book_author.book_id inner join author on author.author_id = book_author.author_id where book_name like '%".$_POST['searchbooks']."%'";
                             //echo $sql;
                             $result = mysqli_query($conn,$sql);
+                            $result1 = mysqli_query($conn,$sql);
                         }
 
 
     				}
                     else if($_POST['taskOption1']=="author"){
-                        echo "the value is ".$_POST['searchbooks']."<br>";
+                        //echo "the value is ".$_POST['searchbooks']."<br>";
                         if(isset($_POST['searchbooks'])){
                             $sql = "SELECT * from book_info inner join book_author on book_info.book_id = book_author.book_id inner join author on author.author_id = book_author.author_id where author_name like '%".$_POST['searchbooks']."%'";
                             //echo $sql;
                             $result = mysqli_query($conn,$sql);
+                            $result1 = mysqli_query($conn,$sql);
 
                         }   
 
                     }
                     
                     
-                    if(mysqli_num_rows($result)){
+                    if(mysqli_num_rows($result1)){
+                        while($row1 = mysqli_fetch_assoc($result1)){
+                            echo "<div id=\"".$row1['book_id']."\" class=\"modal\">";
+                            echo "<div class=\"modal-content\">";
+                            writeTables($row1['book_id'],$conn);
+                            echo '<span class="close" id="close'.$row1['book_id'].'">&times;</span>';
+                            echo '</div>';
+                            echo "</div>";
+                        }
                         echo "<div class=\"table-responsive\" style=\"margin:5%\">";
                         echo "<table class=\"table\" id=\"myTable\">";
                         echo "<thead><tr>";
                         $count = 0;
                         echo "<th>#</th>";
-                        echo "<th onclick=\"sortTable(0)\">Book Name</th>";
-                        echo "<th onclick=\"sortTable(1)\">Book Author</th>
+                        echo "<th onclick=\"sortTable(0,'myTable')\">Book Name</th>";
+                        echo "<th onclick=\"sortTable(1,'myTable')\">Book Author</th>
                                 <th>Transactions of book</th>
                                 </tr></thead><tbody>";
                         //echo "<th onclick=\"sortTable(2)\"></th>";
                         //echo "<th>Link to Profile</th></tr></thead><tbody>";
+
                         while($row = mysqli_fetch_assoc($result)){
                             array_push($books_list, $row['book_id']);
                             $count = $count + 1;
@@ -279,14 +340,9 @@
                                        </div>
                                     </td>
                                  </tr>";
-                            echo "<div id=\"".$row['book_id']."\" class=\"modal\">";
-                            echo "<div class=\"modal-content\">";
-                            echo "The book that has been preesed is ".$row['book_id'];
-                            echo '<span class="close" id="close'.$row['book_id'].'">&times;</span>';
-                            echo '</div>';
-                            echo "</div>";
-
                         }
+
+
 
                         echo "</tbody></ul></table></div>";
                     }
@@ -295,6 +351,7 @@
 
                         echo "<h2 style=\"text-align:center;margin:5%\"> No Results Found.</h2>";
                     }
+                    
 
                 }
 			}
@@ -305,9 +362,7 @@
             // $doc->validateOnParse = true;
             // $doc->Load('blog');
 
-            if(isset($_POST['clicked'])){
-                    echo "PLEADwadADS"."<br>";
-            }
+           
 
 
             echo "<form method=\"post\" action=\"adminLib.php\">
@@ -368,11 +423,13 @@
                 text-decoration: none;
                 cursor: pointer;
             }
-        </style>
+       </style>
         <script>
-            function sortTable(n) {
+            function sortTable(n,id) {
+              console.log(n);
+              console.log(id);
               var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-              table = document.getElementById("myTable");
+              table = document.getElementById(id);
               switching = true;
               //Set the sorting direction to ascending:
               dir = "asc"; 
@@ -391,46 +448,46 @@
                   one from current row and one from the next:*/
                   x = rows[i].getElementsByTagName("TD")[n+1];
                   y = rows[i + 1].getElementsByTagName("TD")[n+1];
-                  console.log(x);
-                  console.log(y);
+                  //console.log(x);
+                  //console.log(y);
                   /*check if the two rows should switch place,
                   based on the direction, asc or desc:*/
-                  if(n==0|| n==1){
-                      console.log(n);
+                  // if(n==0|| n==1){
+                      //console.log(n);
                       if (dir == "asc") {
                         if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
                           //if so, mark as a switch and break the loop:
-                          console.log("I'm here");
+                          //console.log("I'm here");
                           shouldSwitch= true;
                           break;
                         }
                       } else if (dir == "desc") {
                         if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                            console.log("I'm here");
+                            //console.log("I'm here");
                           //if so, mark as a switch and break the loop:
                           shouldSwitch= true;
                           break;
                         }
                       }
-                    }
-                    else{
-                        if (dir == "asc") {
-                        if (x.innerHTML > y.innerHTML) {
-                          //if so, mark as a switch and break the loop:
-                          shouldSwitch= true;
-                          break;
-                        }
-                      } else if (dir == "desc") {
-                        if (x.innerHTML < y.innerHTML) {
-                          //if so, mark as a switch and break the loop:
-                          shouldSwitch= true;
-                          break;
-                        }
-                      }
+                    // }
+                    // else{
+                    //     if (dir == "asc") {
+                    //     if (x.innerHTML > y.innerHTML) {
+                    //       //if so, mark as a switch and break the loop:
+                    //       shouldSwitch= true;
+                    //       break;
+                    //     }
+                    //   } else if (dir == "desc") {
+                    //     if (x.innerHTML < y.innerHTML) {
+                    //       //if so, mark as a switch and break the loop:
+                    //       shouldSwitch= true;
+                    //       break;
+                    //     }
+                    //   }
 
 
 
-                    }
+                    // }
                 }
                 if (shouldSwitch) {
                   /*If a switch has been marked, make the switch

@@ -30,6 +30,18 @@
 ?>
 <html>
 	<head>
+        <style>
+            .btn-default {
+                color: #f9f9f9;
+                background-color: #ff432e;
+                border-color: #ccc;
+            }
+            .btn-default:hover{
+                color: #ff432e;
+                background-color: #f9f9f9;
+                border-color: #ff432e;
+            }
+        </style>
 
         <!-- Basic -->
         <title>IIT Ropar | Library</title>
@@ -98,7 +110,37 @@
             -webkit-box-shadow: rgba(0,0,0, 0.1) 0px 0px 8px; 
 
             } 
-           
+           .form-control {
+                border-radius: 0;
+                border: 2px solid #cfbebe;
+            }
+            .btn-default {
+                color: #f9f9f9;
+                background-color: #ff432e;
+                border-color: #ccc;
+            }
+            .modal {
+                display: none; /* Hidden by default */
+                position: fixed; /* Stay in place */
+                z-index: 1; /* Sit on top */
+                padding-top: 100px; /* Location of the box */
+                left: 0;
+                top: 0;
+                width: 100%; /* Full width */
+                height: 100%; /* Full height */
+                overflow: auto; /* Enable scroll if needed */
+                background-color: rgb(0,0,0); /* Fallback color */
+                background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            }
+
+        /* Modal Content */
+            .modal-content {
+                background-color: #fefefe;
+                margin: auto;
+                padding: 20px;
+                border: 1px solid #888;
+                width: 80%;
+            }
         </style> 
     </head>
 	<body>
@@ -195,9 +237,9 @@
         </div>
         <div class="container-fluid" style="padding:10px 30% 5%">
     		<form class="navbar-form navbar-center" method = "post">
-    			<select name="taskOption1" class="form-control selcls">
+    			<select name="taskOption1" class="form-control">
                      <option value="default" selected>--Search By--</option>
-                     <option value="username">Username></option>
+                     <option value="username">Username</option>
                      <option value="first_name">Name</option>
                      <option value="entry_number">Entry Number</option>
                   </select>
@@ -207,6 +249,11 @@
     		</form>
             
         </div>
+
+         <div class="modal" id="tableModal1">
+            <div class="modal-content" id="tableModal"></div>
+        </div>
+        
 
 
 		<?php
@@ -253,7 +300,8 @@
                         echo "<th onclick=\"sortTable(0)\">Firstname</th>";
                         echo "<th onclick=\"sortTable(1)\">Lastname</th>";
                         echo "<th onclick=\"sortTable(2)\">Total Fine</th>";
-                        echo "<th>Link to Profile</th></tr></thead><tbody>";
+                        echo "<th onclick=\"sortTable(3)\">E-mail</th>";
+                        echo "<th>View Transactions</th>";
                         while($row = mysqli_fetch_assoc($result)){
                             $count = $count + 1;
                             echo "<tr>
@@ -261,9 +309,11 @@
                                     "<td>".$row['first_name']."</td>".
                                     "<td>".$row['last_name']."</td>".
                                     "<td>".$row['total_fine']."</td>".
-                                    "<td><a href=\"?userID=".$row['user_name']."\">".
-                                        "For more information".
-                                    "</a>
+                                    "<td>".$row['email']."</td>".
+                                    "<td>
+                                       <div class=\"container-fluid\" onclick = \"myfunc6('".$row['person_id']."','s".$row['person_id']."')\" >
+                                       <input type=\"button\"  name =\"clicked['".$row['person_id']."']\"  id=\"s".$row['person_id']."\" class=\"btn btn-default\" value=\"View Transactions\" style=\"border-color: #ccc; margin-right: 15px;\">
+                                       </div>
                                     </td>
 
                                 </tr>";        
@@ -380,6 +430,54 @@
                 }
               }
             }
+          </script>
+          <script type = "text/javascript">
+                // Get the 
+                function myfunc(id,btnid,spanid){
+                    console.log(id);
+                    console.log(btnid);
+                    console.log(spanid);
+                    var modal = document.getElementById(id);
+
+                    // Get the button that opens the modal
+                    var btn = document.getElementById(btnid);
+
+                    // Get the <span> element that closes the modal
+                    var span = document.getElementById(spanid);
+
+                    // When the user clicks the button, open the modal 
+                    btn.onclick = function() {
+                        modal.style.display = "block";
+                    }
+
+                    // When the user clicks on <span> (x), close the modal
+                    span.onclick = function() {
+                        modal.style.display = "none";
+                    }
+
+                    // When the user clicks anywhere outside of the modal, close it
+                    window.onclick = function(event) {
+                        if (event.target == modal) {
+                            modal.style.display = "none";
+                        }
+                    }
+                }
+            </script>
+          <script>
+            function myfunc6(person_id,btnid){
+                //console.log("transactions.php?book_id="+book_id);
+               
+                $.ajax({
+                    url: "transactions1.php?person_id="+person_id,
+                    
+                    success: function(result){
+                        $("#tableModal").html("");
+                        $("#tableModal").html(result +"<span class=close id=close>&times;</span>");
+                }});
+                myfunc("tableModal1",btnid,"close");
+
+            }
+
             </script>
 
         <section id="footer-section" class="footer-section">

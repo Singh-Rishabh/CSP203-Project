@@ -14,11 +14,11 @@
 ?>
 
 <?php
-$book_id = $_GET['book_id'];
-writeTables($book_id,$conn);
+$person_id = $_GET['person_id'];
+writeTables($person_id,$conn);
                     
-function writeTables($book_id,$conn){
-    $sql = 'select * from user_books inner join user_info on user_info.person_id = user_books.person_id where book_id ='.$book_id;
+function writeTables($person_id,$conn){
+    $sql = 'select * from user_books inner join user_info on user_info.person_id = user_books.person_id where user_books.person_id ='.$person_id;
     
     
     //echo $sql."<br>";

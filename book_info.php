@@ -271,6 +271,8 @@
                         echo "<th>#</th>";
                         echo "<th onclick=\"sortTable(0,'myTable')\">Book Name</th>";
                         echo "<th onclick=\"sortTable(1,'myTable')\">Book Author</th>
+                                <th onclick=\"sortTable(2,'myTable')\">Quantity</th>
+                                <th onclick=\"sortTable(3,'myTable')\">Refernece books Quantity</th>
                                 <th>Transactions of book</th>
                                 </tr></thead><tbody>";
                         //echo "<th onclick=\"sortTable(2)\"></th>";
@@ -283,6 +285,9 @@
                                     <td>".$count."</td>".
                                     "<td>".$row['book_name']."</td>".
                                     "<td>".$row['author_name']."</td>".
+                                    "<td>".$row['quantity']."</td>".
+                                    "<td>".$row['reference_number']."</td>".
+
                                     "<td>
                                        <div class=\"container-fluid\" onclick = \"myfunc2('".$row['book_id']."','s".$row['book_id']."')\" >
                                        <input type=\"button\"  name =\"clicked['".$row['book_id']."']\"  id=\"s".$row['book_id']."\" class=\"btn btn-default\" value=\"View Transactions\" style=\"border-color: #ccc; margin-right: 15px;\">
@@ -373,6 +378,21 @@
                 cursor: pointer;
             }
        </style>
+       <script>
+                
+            function myfunc3(book_id,person_id){
+                if (confirm('Are you sure you want to send a mail?')) {
+                    $.ajax({
+                        url: "mailsender.php?book_id=" +book_id+"&person_id="+person_id,
+                        success: function(result){
+                            console.log(result);
+                            alert('Email has been sent successfully');
+                        } 
+                    })
+
+                }             
+            }
+        </script>
         <script>
             function sortTable(n,id) {
               console.log(n);
@@ -494,7 +514,7 @@
 
             <script>
             function myfunc2(book_id,btnid){
-                console.log("transactions.php?book_id="+book_id);
+                //console.log("transactions.php?book_id="+book_id);
                
                 $.ajax({
                 	url: "transactions.php?book_id="+book_id,
@@ -506,8 +526,10 @@
     			myfunc("tableModal1",btnid,"close");
 
             }
+
             </script>
 
+            
 
         <section id="footer-section" class="footer-section">
             <div class="container">

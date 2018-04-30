@@ -100,8 +100,8 @@
   		//echo "ajnfkjasdnfkjasndfjnjasjdfn";
   		$_SESSION['first_name'] = $_POST['firstname'];
   		$_SESSION['last_name'] = $_POST['lastname'];
-  		$_SESSION['entry_number'] = $_POST['entrynumber'];
-  		$_SESSION['email'] = $_POST['email'];
+  		$_SESSION['entry_number'] = $_POST['entry_number'];
+  		$_SESSION['email'] = $_POST['Email'];
   		$_SESSION['password'] = $_POST['password'];
   		$_SESSION['repassword'] = $_POST['confirm_password'];
   		$_SESSION['username'] = $_POST['username'];

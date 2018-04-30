@@ -27,10 +27,10 @@ mysqli_select_db($conn,'library');
     
     
         $sql = "SELECT * FROM authenticate where user_name="."'".$_SESSION["username"]."'";
-        echo $sql;
+        //echo $sql;
         $result = mysqli_query($conn, $sql);
         if (mysqli_num_rows($result) > 0) {
-            header("Refresh:0; url=signup1.php");
+            header("Refresh:0; url=signup.php");
             echo "<script>alert('The username has already been taken');</script>";
         }
         else{
@@ -59,7 +59,7 @@ mysqli_select_db($conn,'library');
             }
             else{
                 session_destroy();
-                header("Refresh:0; url=signup1.php");
+                header("Refresh:0; url=signup.php");
                 echo "<script>alert('Please enter the same password in both the fields');</script>";
                 
             }

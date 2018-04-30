@@ -55,10 +55,13 @@ mysqli_select_db($conn,'library');
                 $result = mysqli_query($conn, $query);
                 echo "<script>alert('You have been added :\)');</script>";
                 $_SESSION['person_id'] = $person_id;
+                session_destroy();
                 header("Refresh: 0; url=portfolio.php");
+
 
             }
             else{
+                session_destroy();
                 header("Refresh:0; url=signup.php");
                 echo "<script>alert('Please enter the same password in both the fields');</script>";
                 

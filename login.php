@@ -29,24 +29,34 @@ if(isset($_POST['login'])){
 			}
 			header("Location: index.php");
 		} else{
-			echo"Incorrect details ";
-		}
+			echo"Incorrect details  ";
+		} 
 }echo"new user?";
 		$newuser = "<div><h3><a href='register.php'>Register</a></h3></div>";
 		echo"$newuser";
+
+
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
 <title>Login</title>
-</head>
+
+<link rel="stylesheet" type="text/css" href="style1.css">
 <body>
-<h1 style="font-family: Tahoma;">Login</h1>
+
+<div class="loginbox">
+<img src="pic2.png" class="avatar">
+<h1>login here</h1>
 <form action="login.php" method="post" enctype="multipart/form-data">
+	 <p>username</p>
      <input placeholder="Username" name="username" type="text" autofocus>
+	 <p>password</p>
 	 <input placeholder="Password" name="password" type="password" >
 	 <input name="login" type="submit" value="Login">
 </form>
+</div>
 </body>
+</head>
 </html>

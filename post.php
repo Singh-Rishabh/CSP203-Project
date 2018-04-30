@@ -2,6 +2,11 @@
 session_start();
 include_once("db.php");
 
+if(!isset($_SESSION['username'])){
+	
+	header("Location: login.php");
+	return;
+}
 if(isset($_POST['post'])){
 	$title = strip_tags($_POST['title']);
 	$content = strip_tags($_POST['content']);
@@ -10,7 +15,7 @@ if(isset($_POST['post'])){
 	$date = date('l jS \of F Y h:i:s A');
 	$sql = "INSERT into posts (title,content,date) VALUES ('$title','$content','$date')";
 	if($title == "" || $content == ""){
-		echo " post something";
+		echo "post something";
 		return;
 	}
 	mysqli_query($db,$sql);

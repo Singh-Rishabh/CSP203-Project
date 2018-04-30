@@ -29,7 +29,7 @@ if(mysqli_num_rows($res) > 0) {
 		$content =$row['content'];
 		
         if(isset($_SESSION['admin']) && $_SESSION['admin'] == 1 ){
-			$admin = "<div><a href ='del_post.php?pid=$id'>Delete</a>&nbsp;<a href='edit_post.php?pid=$id'>Edit</a></div>";	 
+			$admin = "<div><a href ='del_post.php?pid=$id'>Delete</a>&nbsp;<a href='edit_post.php?pid=$id'>Reply</a></div>";	 
 		} else{
 			$admin = "";
 		}

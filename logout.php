@@ -11,6 +11,6 @@ session_destroy();
 <title>Logout</title>
 </head>
 <body>
-<meta http-equiv="refresh" content="1;url = login.php" />
+<meta http-equiv="refresh" content="1;url = blogpage.html" />
 </body>
 </html>

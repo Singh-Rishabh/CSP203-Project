@@ -329,19 +329,12 @@
 
 
 			}
-            $actual_link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-            //echo $actual_link."<br>";
-
-                
-            $query_string = parse_url($actual_link, PHP_URL_QUERY);
-            //echo $query_string."<br>";
-            if(isset($_GET['userID'])){
-                if(strcmp($_GET['userID'],"")){
-                        echo "<script>alert('Redirecting the page');</script>";
-                        $_SESSION['userID2'] = $_GET['userID'];
-                        header("Location:userProfile.php");
-                }
-            }
+            echo "<form method=\"post\" action=\"adminLib.php\">
+                   <center><div class=\"container-fluid\" style=\"\">
+                   <input type=\"submit\" name =\"goback\"  id=\"goback\" class=\"btn btn-default\" value=\"Go back\" style=\"border-color: #ccc; margin-right: 15px;\">
+                   </div></center>
+                </form>";
+            
 
 
 		?>
@@ -350,6 +343,22 @@
                 cursor: pointer;
             }
         </style>
+        <script>
+                
+            function myfunc3(book_id,person_id){
+                if (confirm('Are you sure you want to send a mail?')) {
+                    alert('mail will be sent shortly');
+                    $.ajax({
+                        url: "mailsender.php?book_id=" +book_id+"&person_id="+person_id,
+                        success: function(result){
+                            console.log(result);
+                            alert('Email has been sent successfully');
+                        } 
+                    })
+
+                }             
+            }
+        </script>
         <script>
             function sortTable(n) {
               var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;

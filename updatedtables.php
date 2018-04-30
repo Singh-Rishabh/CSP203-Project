@@ -61,7 +61,7 @@
 		        echo "</tbody></ul></table></div>";
 		    }
 		    else{
-		        echo "<h2 style=\"text-align:center;margin:5%\"> There are no Transactions.</h2>";
+		        echo "<h2 style=\"text-align:center;margin:5%\"> No books to return.</h2>";
 		    }
 		}
 		

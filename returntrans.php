@@ -21,6 +21,8 @@
 
     $sql = "UPDATE user_books set date_return = '".date("Y/m/d")."' where person_id = ".$person_id." and book_id = ".$book_id;
     $result = mysqli_query($conn,$sql);
+    $sql = "UPDATE book_info set quantity = quantity + 1 where book_id = ".$book_id;
+    $result = mysqli_query($conn,$sql);
     echo "Successfully returned";
     //echo $sql;
 ?>

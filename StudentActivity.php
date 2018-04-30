@@ -2,7 +2,14 @@
 <!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
 <!--[if (gte IE 9)|!(IE)]><html lang="en" class="no-js"> <![endif]-->
 
-
+<?php
+	session_start();
+	$pd=NULL;
+	if(isset($_SESSION['person_id']))
+	{
+		$pd=$_SESSION['person_id'];
+	}
+?>
 
 
 <html lang="en">
@@ -19,7 +26,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
         <meta name="description" content="Sulfur - Responsive HTML5 Template">
-        <meta name="author" content="Shahriyar Ahmed">
+        <meta name="author" content="VineelKumarRaj">
         
         
         
@@ -41,57 +48,92 @@
         
         <!--- Inline style -->
         <style>
-        	.fixed{
-        		position: top;
-        	}
-            .nav-sidebar {
-  				margin-right: 20px; /* 20px padding + 1px border */
- 			    margin-bottom: 20px;
-  				margin-left: 10px;
-			}
-			.nav-sidebar > li > a {
-  				padding-right: 10px;
-  				padding-left: 10px;
-			}
-			.nav-sidebar > .active > a,
-			.nav-sidebar > .active > a:hover,
-			.nav-sidebar > .active > a:focus {
-  				color: #fff;
-  				background-color: #428bca;
-			}
-			
+            
 			.wrapper{
 				padding-right: 5px;
   				padding-left: -1px; 
 			}
+			div#status{position:fixed; font-size:24px;}
+			div#wrap{width:800px; margin:0px auto;}
+			div.newData{height:1000px; background:#09F; margin:10px 0px;}
+			
+			
 			            
         </style>
         
         <!--- Java Script --->
+        
         <script>
+        
+        	var n=0;
         	function setActive(x)
         	{
         		document.getElementsByName(x)[0].setAttribute("class","active");
         	}
+        	
+        	function addEvents()
+        	{
+        		if(n==-1) return;
+        		var parts = window.location.search.substr(1).split("&");
+				var $_GET = {};
+				for (var i = 0; i < parts.length; i++) {
+    				var temp = parts[i].split("=");
+    				$_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
+					}
+        		var hr = new XMLHttpRequest ();
+        		var url = "./phpSA/addEvents.php?type="+$_GET['type'];
+        		var vars = "n="+n;
+        		n=n+4;
+        		hr.open("POST",url,true);
+        		hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        		hr.onreadystatechange = function (){
+        					if(hr.readyState == 4 && hr.status == 200) {
+        					var return_data = hr.responseText;
+        					var wrap = document.getElementById('scrollX');
+        					if(return_data.trim().substr(return_data.length - 5)  === "00000")
+        					{
+        						wrap.innerHTML+="<center><p><big>~~No Events Left To show~~</big></p></center>";
+        						n=-1;
+        						return;
+        					}
+        					wrap.innerHTML+=return_data;
+        					}
+        				}
+        		hr.send(vars);
+        		document.getElementById("loading").innerHTML = "Loading...";
+        	}
+        	
+        	function yHandler(){
+				var wrap = document.getElementById('scrollX');
+				var contentHeight = wrap.offsetHeight;
+				var yOffset = window.pageYOffset; 
+				var y = yOffset + window.innerHeight;
+				var sideBar = document.getElementById('SideBar');
+				if(y >= contentHeight){
+				// Ajax call to get more dynamic data goes here
+					addEvents();
+					}
+				if( y >=900){
+					sideBar.setAttribute("style","position:fixed;");
+					sideBar.style.top="40px";
+				}
+				else if(y<1050)
+				{
+					sideBar.setAttribute("style","position:static;");
+					sideBar.style.top="auto";
+				}
+				 
+				}
+			
+				window.onscroll = yHandler;
+			
+        	
         </script>
         
 
     </head>
 
     <body>
-    	<?php
-			$servername = "localhost";
-			$username = "root";
-			$password = "vineel@203";
-			$Database = "project";
-
-			$conn = new mysqli($servername, $username, $password,$Database);
-
-			if($conn->connect_error) {
-   				 die("Connection failed: " . $conn->connect_error);
-			}
-		?>
-    
         <header class="clearfix">
         
             <!-- Start  Logo & Naviagtion  -->
@@ -143,11 +185,11 @@
         
         <!-- Start Header Section -->
         
-        <div class="page-header ">
-            <div class="overlay">
+        <div class="page-header">
+            <div class="overlay" >
                 <div class="container">
-                    <div class="row">
-                        <div class="col-md-12">
+                    <div class="row" >
+                        <div class="col-md-12 " >
                             <h1>Student Activity Portal</h1>
                         </div>
                     </div>
@@ -155,12 +197,12 @@
             </div>
         </div>
         <!-- End Header Section -->
-    <div class="container-fluid">
+    <div class="container-fluid" >
         <div class="row">
-            <div class="sidebar col-sm-2 " style="color: red" >
-	                <ul class="nav nav-sidebar fixed">
+            <div class="sidebar col-sm-2 verticalLine" style="color: red" ">
+	                <ul class="nav nav-sidebar" id = "SideBar">
 	            <li><form action="StudentActivity.php" method="POST">
-	            		<input type="text" name='Search' placeholder="Search..">
+	            		<input type="text" name='Search' placeholder="Search.." style ="width: 170px;">
 	            		<div class="wrapper"><button type="submit" name="search" style="text-align: center;">Search</button></div>
 	            	</form>
 	            </li>
@@ -170,72 +212,27 @@
                 <li name="Sports"><a href="StudentActivity.php?type=Sports">Sports</a></li>
                 <li name="TechClubs"><a href="StudentActivity.php?type=Tech">Technical Clubs</a></li>
                 <li name="TP"><a href="StudentActivity.php?type=TP">T&P</a></li>
-                <li><a href="addActivity.php">Add Event</a></li>
+                <?php
+                if($pd!=NULL)
+                {
+                	require_once('phpSA/db_connect.php');
+                	ini_set('display_errors', 'On');
+                	$stmt = $conn->prepare('Select * from admins where user_id = ?');
+                	$stmt->bind_param('i',$pd);
+                	$stmt->execute();
+                	$stmt->bind_result($temp);
+                	if($stmt->fetch()) echo "<li ><a href=\"addActivity.php\">Add Event</a></li>";
+                }
+                ?>
                 </ul>
             </div>
-            <div class="container col-md-10">
-                <?php
-                		$stmt=NULL;
-                		if(isset($_GET['type']))
-                		{
-                			if($_GET['type'] == 'New')
-                			{
-	               				$stmt=$conn->prepare("Select * from event Order by event_id DESC");
-	               				echo "<script>setActive('New')</script>";
-	               				
-                			}
-                			else if($_GET['type'] == 'General')
-                			{
-                				$stmt=$conn->prepare("Select * from event where event_id in (Select event_id from reference where cat_id = (select cat_id from category where cat = \"General\")) Order by event_id DESC");
-                				echo "<script>setActive('General')</script>";
-                			}
-                			else if($_GET['type'] == 'Sports')
-                			{
-                				$stmt=$conn->prepare("Select * from event where event_id in (Select event_id from reference where cat_id = (select cat_id from category where cat = \"Sports\")) Order by event_id DESC");
-                				echo "<script>setActive('Sports')</script>";
-                			}
-                			else if($_GET['type'] == 'Culturals')
-                			{
-                				$stmt=$conn->prepare("Select * from event where event_id in (Select event_id from reference where cat_id = (select cat_id from category where cat = \"Culturals\")) Order by event_id DESC");
-                				echo "<script>setActive('Culturals')</script>";
-                			}
-                			else if($_GET['type'] == 'Tech')
-                			{
-                				$stmt=$conn->prepare("Select * from event where event_id in (Select event_id from reference where cat_id = (select cat_id from category where cat = \"Technical Clubs\")) Order by event_id DESC");
-                				echo "<script>setActive('TechClubs')</script>";
-                			}
-                			else if($_GET['type'] == 'TP')
-                			{
-                				$stmt=$conn->prepare("Select * from event where event_id in (Select event_id from reference where cat_id = (select cat_id from category where cat = \"T&P\")) Order by event_id DESC");
-                				echo "<script>setActive('TP')</script>";
-                			}
-                		}
-                		if($stmt!=NULL)
-                		{
-                			$stmt->execute();
-                			$stmt->bind_result($id,$title,$desc);
-                			if(!$stmt->fetch())
-                			{
-                				echo "<center><p><big>~~No Events To show~~</big></p></center>";
-                			}
-                			else
-                			{
-                				do
-                				{
-                					echo"<div class=\"panel panel-info\">".
-  											"<div class=\"panel-heading\">".$title."</div>".
-  											"<div class=\"panel-body\">".$desc."</div>".
-  											"<div class=\"panel-footer\"> <a href = 'StudentActivity.php?pid=".$id."')'>Delete</a></div>".
-  										"</div>";
-                				}while($stmt->fetch());
-                			
-                			}
-                		
-                		}
-                ?>
+            <div class="container col-sm-10 " id="scrollX">
+            		
+ 				<script>addEvents();</script>
                 <?php
                 	if(isset($_POST['Search']) && !empty($_POST['Search']))
                 		{
+                			require_once('phpSA/db_connect.php');
                 			$stmt = NULL;
                 			$search = $_POST['Search'];
                 			$cmd="Select * from event where title like '%".$search."%'";
@@ -243,7 +240,7 @@
                 			if($stmt!=NULL)
                 			{
                 				$stmt->execute();
-                				$stmt->bind_result($id,$title,$desc);
+                				$stmt->bind_result($id,$title,$desc,$time);
                 				if(!$stmt->fetch())
                 				{
                 					echo "<center><p><big>~~No Events To show~~</big></p></center>";
@@ -252,10 +249,16 @@
                 				{
                 					do
                 					{
-                						echo"<div class=\"panel panel-info\">".
-  												"<div class=\"panel-heading\">".$title."</div>".
-  												"<div class=\"panel-body\">".$desc."</div>".
-  											"</div>";
+                						echo"<a href=\"DisplayMessage.php?event_id=".$id."\" class=\"list-group-item\">".
+                	    					"<span class=\"glyphicon glyphicon-star-empty\">\"".$title."\"</span>".
+											"<span class=\"badge\">".$time."</span>".
+											"<div>".
+												"<span class=\"text-muted\" style=\"font-size: 11px; text-align:center\">".
+												substr($desc,0,100).
+												"...</span>".
+											"</div>".
+											"<span class=\"pull-right\">".
+											"</a>";
                 					}while($stmt->fetch());
                 				
                 				}
@@ -267,17 +270,20 @@
                 <?php
                 	if(isset($_GET['pid']))
                 	{
+                		require_once('./phpSA/db_connect.php');
                 		$event_id=$_GET['pid'];
                 		$stmt=$conn->prepare("Delete from event where event_id=?");
                 		$stmt->bind_param('i',$event_id);
                 		$stmt->execute();
-                		echo "<script>javascript:window.location = document.referrer</script>";
+                		echo "<script>javascript:window.location = \"StudentActivity.php?type=New\"</script>";
                 		exit;
                 	}
                 ?>
+                <div class="loading"></div>
             </div>
         </div>
     </div>
+    
         <script src="asset/js/jquery-2.1.3.min.js"></script>
         <script src="asset/bootstrap/js/bootstrap.min.js"></script>
         

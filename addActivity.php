@@ -200,7 +200,9 @@
                 <li name="Sports"><a href="StudentActivity.php?type=Sports">Sports</a></li>
                 <li name="TechClubs"><a href="StudentActivity.php?type=Tech">Technical Clubs</a></li>
                 <li name="TP"><a href="StudentActivity.php?type=TP">T&P</a></li>
-                <li class="active" ><a href="addActivity.php">Add Event</a></li>
+                <?php
+                	echo "<li class=\"active\" ><a href=\"addActivity.php\">Add Event</a></li>";
+                ?>
                 </ul>
             </div>
             <div class="container col-md-10">
@@ -233,8 +235,8 @@
 					}
 					else
 					{
-						//Insert into event 						
-						$stmt=$conn->prepare("INSERT INTO event(title,description) values(?,?)");
+						//Insert into event 					
+						$stmt=$conn->prepare("INSERT INTO event(title,description,time) values(?,?,NOW())");
 						$stmt->bind_param('ss',$title,$desc);
 						$stmt->execute();
 						//get eventId

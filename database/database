@@ -3,6 +3,7 @@ create table event(
 	event_id int NOT NULL AUTO_INCREMENT,
 	title text NOT NULL,
 	description text NOT NULL,
+	time DATETIME NOT NULL,
 	PRIMARY KEY (event_id)
 );
 
@@ -20,6 +21,11 @@ create table reference(
 	FOREIGN KEY (event_id) REFERENCES event(event_id) ON DELETE CASCADE,
 	FOREIGN KEY (cat_id) REFERENCES category(cat_id)  ON DELETE CASCADE
 );
+
+drop table if exists admins;
+create table admins(
+	user_id int NOT NULL	
+	);
 
 Insert into category(cat) values("General");
 Insert into category(cat) values("Technical Clubs");

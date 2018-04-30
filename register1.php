@@ -24,16 +24,13 @@ mysqli_select_db($conn,'library');
     $repassword = $_SESSION["repassword"];
     $username = $_SESSION["username"];
     $person_id = "";
-    if($_SESSION["first_name"]=="" || $_SESSION["last_name"]=="" || $_SESSION["username"]=="" || $_SESSION["email"]=="" || $_SESSION["password"]=="" || $_SESSION["entry_number"]==""){
-        header("Refresh: 0; url=signup.php");
-        echo "<script>alert('Please fill all the credentials in the previous page');</script>";
-    }
-    else{
+    
+    
         $sql = "SELECT * FROM authenticate where user_name="."'".$_SESSION["username"]."'";
         echo $sql;
         $result = mysqli_query($conn, $sql);
         if (mysqli_num_rows($result) > 0) {
-            header("Refresh:0; url=signup.php");
+            header("Refresh:0; url=signup1.php");
             echo "<script>alert('The username has already been taken');</script>";
         }
         else{
@@ -41,17 +38,17 @@ mysqli_select_db($conn,'library');
             if($password == $repassword){
                 $query = "INSERT INTO user_info (first_name, last_name, entry_number, email,total_fine) 
           	       	VALUES ('$firstname', '$lastname','$entry_number','$email',0)";
-                echo "<br>".$query."<br>";
+                //echo "<br>".$query."<br>";
                 $result = mysqli_query($conn, $query);
                 $query = "SELECT person_id from user_info where first_name="."'"   .$firstname. "'".  " and last_name="."'"    .$lastname. "'".  " and entry_number=" ."'".$entry_number. "'"."  and email=".  "'".$email."'";
-                echo $query."<br>";
+                //echo $query."<br>";
                 $result = mysqli_query($conn, $query);
                 #echo $result;
                 while($row = mysqli_fetch_assoc($result)) {
                     $person_id = $row['person_id'];
                 }
                 $query = "INSERT INTO authenticate(person_id, user_name, password) VALUES('$person_id','$username','$password')";
-                echo $query;
+               // echo $query;
                 $result = mysqli_query($conn, $query);
                 echo "<script>alert('You have been added :\)');</script>";
                 $_SESSION['person_id'] = $person_id;
@@ -62,13 +59,13 @@ mysqli_select_db($conn,'library');
             }
             else{
                 session_destroy();
-                header("Refresh:0; url=signup.php");
+                header("Refresh:0; url=signup1.php");
                 echo "<script>alert('Please enter the same password in both the fields');</script>";
                 
             }
         }
 
         
-    }
+    
 
 ?>

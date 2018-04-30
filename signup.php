@@ -1,76 +1,116 @@
-<!DOCTYPE html>
 <?php
-    session_start();
+	@ob_start();
+	session_start();
 
 ?>
-<html lang="en">
+
+
+<!DOCTYPE html>
+<html lang="en" >
+
 <head>
-    <style>
-.form-control:focus{border-color: #5cb85c;  box-shadow: none; -webkit-box-shadow: none;} 
-.has-error .form-control:focus{box-shadow: none; -webkit-box-shadow: none;}
-</style>
-  <title>signup</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="asset/bootstrap/css/bootstrap.min.css" type="text/css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="ajax.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src = "script.js"></script>
+  <meta charset="UTF-8">
+  <title>Sign Up Form with live validation</title>
+  
+  
+  
+      <link rel="stylesheet" href="css/style.css">
+
+  
 </head>
+
 <body>
 
-<div class="container">
-  <h2>Signup</h2>
-  
-    <form  action="" method="post" >
-        <div class = "form-group col-sm-8">
-          <label for="first_name">First Name:</label>
-          <input type="text" class="form-control" id="first_name" placeholder="Enter First Name" name = "first_name">
-        </div>
-        <div class = "form-group col-sm-8">
-            <label for="last_name">Last Name:</label>
-            <input type="text" class="form-control" id="Last_name" placeholder="Enter Last Name" name = "last_name">
-          </div>
-        <div class = "form-group col-sm-8">
-          <label for="username">username:</label>
-          <input type="text" class="form-control" id="username" placeholder="Enter username" name = "username">
-        </div>
-         <div class = "form-group col-sm-8">
-          <label for="entry_number">Entry Number:</label>
-          <input type="text" class="form-control" id="entry_number" placeholder="Enter entry_number" name = "entry_number">
-        </div>
-      <div class="form-group col-sm-8">
-        <label for="email">Email:</label>
-        <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
-      </div> 
-      <div class="form-group col-sm-8">
-        <label for="pwd">Password:</label>
-        <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pwd">
-      </div>
-      <div class="form-group col-sm-8">
-        <label for="pwd">RePassword:</label>
-        <input type="password" class="form-control" id="repwd" placeholder="Enter password again" name="repwd">
-      </div>
-      <div class="form-group col-sm-8">
-        <button type="submit" class="btn btn-default" name="submit" id="submit">Submit</button>
-      </div>
-    </form>
-</div>
-    
-<?php
-    #secho "I'm here";
-    if(isset($_POST['submit'])){
-        $_SESSION["first_name"] = $_POST['first_name'];
-        $_SESSION["last_name"] = $_POST['last_name'];
-        $_SESSION["username"] = $_POST['username'];
-        $_SESSION["email"] = $_POST["email"];
-        $_SESSION["password"] = $_POST["pwd"];
-        $_SESSION["entry_number"] =$_POST["entry_number"];
-        $_SESSION["repassword"]=$_POST["repwd"];
-        header('Location:register1.php');
-    }
-?>
+  	
+
+<form method="post">
+  <h2>Sign Up</h2>
+  		<p>
+			<label for="firstname" class="floatLabel">First name</label>
+			<input id="firstname" name="firstname" type="text"  required>
+			<span id="firstspan"></span>
+		</p>
+		<p>
+			<label for="lastname" class="floatLabel">Last name</label>
+			<input id="lastname" name="lastname" type="text"  required>
+			<span id="lastspan"></span>
+		</p>
+		<p>
+			<label for="Email" class="floatLabel">Email</label>
+			<input id="Email" name="Email" type="text"  required>
+			<span id="emailspan"></span>
+		</p>
+		<p>
+			<label for="Username" class="floatLabel">Username</label>
+			<input id="username" name="username" type="text" onblur="checkusername()" required>
+			<span id="usernamespan"></span>
+		</p>
+		<p>
+			<label for="entry_number" class="floatLabel">Entry Number</label>
+			<input id="entry_number" name="entry_number" type="text" required>
+			<span id="entryspan"></span>
+		</p>
+		<p>
+			<label for="password" class="floatLabel">Password</label>
+			<input id="password" name="password" type="password" >
+			<span>Enter a password longer than 8 characters</span>
+		</p>
+		<p>
+			<label for="confirm_password" class="floatLabel">Confirm Password</label>
+			<input id="confirm_password" name="confirm_password" type="password">
+			<span>Your passwords do not match</span>
+		</p>
+		
+		<p>
+			<input type="submit" name = "submit" value="Create My Account" id="submit">
+		</p>
+	</form>
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+  <script>
+  	function checkusername(){
+
+  		var x = document.getElementById("username");
+  		//console.log(x.value.length + "adsfadsfsda");
+  		if(x.value.length==0){
+			$("#usernamespan").html("Please enter the username"); 
+			$("#usernamespan").css("display", "block"); 		
+  		}
+  		else{
+			$("#usernamespan").html("");
+			$("#usernamespan").css("display", "none");
+			//console.log("asdfasdfadsfasdfawegfasdgarga");
+			$.ajax({
+                    url: "checkusername.php?username="+x.value,
+                    
+                    success: function(result){
+                    	console.log(result + "result pls");
+                        if(result=="1"){
+                        	//console.log("gggggggg");
+                        	$("#usernamespan").html("This user already exists"); 
+                        	$("#usernamespan").css("display", "block");
+                        }                     
+                }});   		
+  		}
+  	}
+
+  </script>
+  <script  src="js/index.js"></script>
+  <?php
+  	if(isset($_POST['submit'])){
+  		//echo "ajnfkjasdnfkjasndfjnjasjdfn";
+  		$_SESSION['first_name'] = $_POST['firstname'];
+  		$_SESSION['last_name'] = $_POST['lastname'];
+  		$_SESSION['entry_number'] = $_POST['entrynumber'];
+  		$_SESSION['email'] = $_POST['email'];
+  		$_SESSION['password'] = $_POST['password'];
+  		$_SESSION['repassword'] = $_POST['confirm_password'];
+  		$_SESSION['username'] = $_POST['username'];
+  		//echo "<script>alert('You will be added');</script>";
+  		header("Location:register1.php");
+  	}
+  ?>
+
 
 </body>
+
 </html>

@@ -112,7 +112,7 @@
                         <!-- End Toggle Nav Link For Mobiles -->
                         <a class="navbar-brand" href="#"><img src="img/iitrprlogo.jpg" style="max-height: 40px;max-width: 40px; margin-top: -10px;"></a>
                     </div>
-                    <div class="navbar  -collapse collapse">
+                    <div class="navbar-collapse collapse">
                         
                         <!-- Start Navigation List -->
                         <ul class="nav navbar-nav navbar-right">
@@ -156,7 +156,7 @@
                         <div class="col-md-12 text-center">
                             <?php
 
-                                echo "<h1>Hi, " . $_SESSION['userID1'] . "</h1>";
+                                echo "<h1>Hi, " . $_SESSION['userID1'] ."</h1>";
                                 $_SESSION["first_name"]=$_SESSION["first_name"];
                                 $_SESSION["last_name"]=$_SESSION["last_name"];
                             ?>
@@ -256,10 +256,10 @@
                                                                                         <img src="img/book.png" class="img-responsive" style="opacity:0.8" alt="" />
                                                                                         <div class="portfolio-caption">
                                                                                         
-                                                                                            <h4>'. $bookname .'cndskvndsivkdivn</h4>
+                                                                                            <h4>'. $bookname .'</h4>
                                                                                             <p>Author: ' .$authorName . '</p>
-                                                                                            <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                                                                            <a href="userLib.php?book_id_URL='.$book_id . '" class="link-2" title = "Issue Book"><i class="fa fa-link"></i></a>
+                                                                                            <a data-toggle="modal" title="Add to Cart" class="link-1"><i class="fa fa-magic" onclick="fun1('.$book_id .','.$_SESSION["person_id"]. ')"></i></a>
+                                                                                            <a class="link-2" title = "Issue Book"><i class="fa fa-link"  onclick="fun2('.$book_id .','.$_SESSION["person_id"]. ')"></i></a>
                                                                                         </div>
                                                                                     </div>
                                                                                 </li>
@@ -313,8 +313,8 @@
                                                                     <div class="portfolio-caption">
                                                                         <h4>'. $bookname .'</h4>
                                                                         <p>Author: ' .$authorName . '</p>
-                                                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                                                        <a href="userLib.php?book_id_URL='.$book_id . '" class="link-2"><i class="fa fa-link" title = "Issue Book"></i></a>                                                                    </div>
+                                                                        <a data-toggle="modal" title="Add to Cart" onclick="fun1('.$book_id .','.$_SESSION["person_id"]. ')" class="link-1"><i class="fa fa-magic"></i></a>
+                                                                        <a class="link-2"><i class="fa fa-link" title = "Issue Book" onclick="fun2('.$book_id .','.$_SESSION["person_id"]. ')"></i></a>                                                                    </div>
                                                                 </div>
                                                             </li>';
                                                                                 
@@ -345,9 +345,10 @@
                                                                             <ul id="portfolio-list">';
                                                         while($row = mysqli_fetch_assoc($result)){
 //                                                            echo "Book name: " . $row['book_name'] . " is_sem: " . $row['is_sem'] . "<br>";
-                                                            $authorName= "";
+                                                            
                                                             $bookname = $row['book_name'];
                                                             $book_id = $row['book_id'];
+                                                            $authorName= "";
                                                             $authorsql = "SELECT author_name FROM author INNER JOIN book_author ON book_author.author_id = author.author_id INNER JOIN book_info ON book_info.book_id = book_author.book_id WHERE book_info.book_id = ". $row['book_id'];
                                                             $authroResult = mysqli_query($conn, $authorsql);
                                                             $count = mysqli_num_rows($authroResult);
@@ -368,8 +369,8 @@
                                                                     <div class="portfolio-caption">
                                                                         <h4>'. $bookname .'</h4>
                                                                         <p>Author: ' .$authorName . '</p>
-                                                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                                                        <a href="userLib.php?book_id_URL='.$book_id . '" class="link-2"><i class="fa fa-link" title = "Issue Book"></i></a>                                                                    </div>
+                                                                        <a  data-toggle="modal" title="Add to Cart" onclick="fun1('.$book_id .','.$_SESSION["person_id"]. ')" class="link-1"><i class="fa fa-magic"></i></a>
+                                                                        <a class="link-2"  onclick="fun2('.$book_id .','.$_SESSION["person_id"]. ')"><i class="fa fa-link" title = "Issue Book"></i></a>                                       </div>
                                                                 </div>
                                                             </li>';
                                                                                 
@@ -390,23 +391,73 @@
                                     }
                           
                                     if (isset($_POST["logoutbtn"])){
-                                        var_dump(isset($_POST["logoutbtn"]));
+                                        var_dump(isset($_POST["logoutbtn"]));   
                                         session_unset();
                                         session_destroy();
                                         header('Location: portfolio.php');
                                     }
-                                    $issueBook = false;
-                                    if(isset($_GET['book_id_URL'])){
-                                        echo "<script>var issueBook = window.confirm('Are You sure to issue this book?');
-                                            if(issueBook == true){
-                                                alert('You book has been issued');
-                                            }
-                                                </script>";
-                                        header('Location: userLib.php');
-                                    }
+                          
+                          
+                          
                           
                                         
                                ?>
+                          <script>
+                                function fun1(book_id,person_id){
+                                    var x = window.confirm("Are u sure to add this book to cart");
+                                    if (x){
+                                        $.ajax({
+                                            url:'addCart.php?book_id='+book_id+'&person_id=' + person_id,
+                                            success:function (result){
+                                                result = result.trim();
+                                                if (result == "1"){
+                                                    window.alert('Your book has been added to cart!!');    
+                                                }
+                                                else if(result == "2"){
+                                                    window.alert('Sorry there was some problem and your book Cannot be added To cart' ) ;
+                                                }else if(result == "3"){
+                                                    window.alert('This Book Is already present in your cart');
+                                                }else{
+                                                    window.alert('Sorry there was some problem and your book Cannot be added To cart');
+                                                }
+                                                
+                                            }                                        
+                                            
+                                        })
+                                    }
+                                }
+                          </script>
+                              
+                          <script>
+                              function fun2(book_id,person_id){
+                                    var x = window.confirm("Are You sure to Issue this book");
+                                    if (x){
+                                        $.ajax({
+                                            url:'issueBook.php?book_id='+book_id+'&person_id=' + person_id,
+                                            success:function (result){
+                                                result = result.trim();
+
+                                                console.log(result);
+                                                if (result == "1"){
+                                                    window.alert('Your book has been issued!!');    
+                                                }
+                                                else if(result == "2"){
+                                                    window.alert('Sorry there was some problem and your book Cannot be issued dddddddddssssssssssss') ;
+                                                }else if (result=="3"){
+                                                    window.alert('Sorry There are no books left to issue. You can read this book as reference in library');
+                                                }
+                                                else if (result == "4"){
+                                                    window.alert('You have alrady Booked 4 Books Cannot issue more books.');
+                                                }else{
+                                                    window.alert('Sorry there was some problem and your book Cannot be Issued ddddddddd ' +result);
+                                                }
+                                                
+                                            }                                        
+                                            
+                                        })
+                                    }
+                                }
+                          </script>
                       </div>
                   </div>
               </nav>
@@ -424,92 +475,57 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        
-                        <!-- Start Portfolio items -->
                         <ul id="portfolio-list">
-                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="300ms">
-                                <div class="portfolio-item">
-                                    <img src="img/book.png" class="img-responsive" style="opacity:0.8" alt="" />
-                                    <div class="portfolio-caption">
-                                        <h4>Book Title</h4>
-                                        <p>Description and authors</p>
-<!--
-                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
--->
-                                    </div>
-                                </div>
-                            </li>
-                            
-                            
-                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="600ms">
-                                <div class="portfolio-item">
-                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
-                                    <div class="portfolio-caption">
-                                        <h4>Book Title</h4>
-                                        <p>Description and authors</p>
-<!--
-                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
--->
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="900ms">
-                                <div class="portfolio-item">
-                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
-                                    <div class="portfolio-caption">
-                                        <h4>Book Title</h4>
-                                        <p>Description and authors</p>
-<!--
-                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
--->
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="1200ms">
-                                <div class="portfolio-item">
-                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
-                                    <div class="portfolio-caption">
-                                        <h4>Book Title</h4>
-                                        <p>Description and authors</p>
-<!--
-                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
--->
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="1500ms">
-                                <div class="portfolio-item">
-                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
-                                    <div class="portfolio-caption">
-                                        <h4>Book Title</h4>
-                                        <p>Description and authors</p>
-<!--
-                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
--->
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="1800ms">
-                                <div class="portfolio-item">
-                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
-                                    <div class="portfolio-caption">
-                                        <h4>Book Title</h4>
-                                        <p>Description and authors</p>
-<!--
-                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
--->
-                                    </div>
-                                </div>
-                            </li>
-                            
-                            
+                        <?php
+                            $sql = "SELECT user_books.fine, user_books.book_id, user_books.date_return, user_books.due_date, book_info.book_name FROM user_books INNER JOIN book_info ON book_info.book_id = user_books.book_id WHERE person_id = ". $_SESSION['person_id'];
+                            $result = mysqli_query($conn, $sql);
+                            $count = mysqli_num_rows($result);
+                            $j = 0;
+                            if ($count > 0){
+                                
+                                while($row = mysqli_fetch_assoc($result)){
+                                    $currDate = date('Y-m-d');
+                                    if ($row['date_return'] == NULL ){
+                                        
+                                        $authorName= "";
+                                        $authorsql = "SELECT author_name FROM author INNER JOIN book_author ON book_author.author_id = author.author_id INNER JOIN book_info ON book_info.book_id = book_author.book_id WHERE book_info.book_id = ". $row['book_id'];
+                                        $authroResult = mysqli_query($conn, $authorsql);
+                                        $count = mysqli_num_rows($authroResult);
+                                        $i = 0;
+                                        while($row1 = mysqli_fetch_assoc($authroResult)){
+                                            if ($i == ($count -1 ) ){
+                                                $authorName = $authorName . $row1['author_name'];
+                                            }else{
+                                                $authorName = $authorName . $row1['author_name'].", ";
+                                            }
+                                            $i = $i +1;
+                                        }
+                                            
+                                            echo '
+                                                <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="300ms">
+                                                    <div class="portfolio-item">
+                                                        <img src="img/book.png" class="img-responsive" style="opacity:0.8" alt="" />
+                                                        <div class="portfolio-caption">
+                                                            <h4>'. $row["book_name"] .'</h4>
+                                                            <p>Author: '. $authorName .'</p>
+                                                        </div>
+                                                    </div>
+                                                </li>';
+                                    }
+
+                                }
+
+
+                            }else if ($j == 0) {
+                                echo '<p class="text-center" style="color:red;font-size:20px">You have currently no book issued</p>';
+                            }
+                            else{
+                                 echo '<p>You have currently no book issued</p>';
+                            }
+                        ?>
                         </ul>
+                        <!-- Start Portfolio items -->
+            
                         <!-- End Portfolio items -->
                     </div>
                 </div>
@@ -646,3 +662,77 @@
     
     </body>
 </html>
+
+<!--
+<ul id="portfolio-list">
+                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="300ms">
+                                <div class="portfolio-item">
+                                    <img src="img/book.png" class="img-responsive" style="opacity:0.8" alt="" />
+                                    <div class="portfolio-caption">
+                                        <h4>Book Title</h4>
+                                        <p>Description and authors</p>
+                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
+                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                            
+                            
+                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="600ms">
+                                <div class="portfolio-item">
+                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
+                                    <div class="portfolio-caption">
+                                        <h4>Book Title</h4>
+                                        <p>Description and authors</p>
+                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
+                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="900ms">
+                                <div class="portfolio-item">
+                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
+                                    <div class="portfolio-caption">
+                                        <h4>Book Title</h4>
+                                        <p>Description and authors</p>
+                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
+                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="1200ms">
+                                <div class="portfolio-item">
+                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
+                                    <div class="portfolio-caption">
+                                        <h4>Book Title</h4>
+                                        <p>Description and authors</p>
+                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
+                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="1500ms">
+                                <div class="portfolio-item">
+                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
+                                    <div class="portfolio-caption">
+                                        <h4>Book Title</h4>
+                                        <p>Description and authors</p>
+                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
+                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="1800ms">
+                                <div class="portfolio-item">
+                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
+                                    <div class="portfolio-caption">
+                                        <h4>Book Title</h4>
+                                        <p>Description and authors</p>
+                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
+                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                            
+                            
+                        </ul>-->

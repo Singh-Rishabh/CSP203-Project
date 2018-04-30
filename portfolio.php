@@ -175,15 +175,19 @@
                           </button>
                       </div>
                       <div class="navbar-collapse collapse" id="navbarCollapse">
-                           <form class="navbar-form navbar-left" method="post">
-                            <div class="form-group">
-                                <input type="text" id="searchBooks" placeholder="Search Books" class="form-control" style="border-color: #ccc;">
-                            </div>
-                                <input type="submit" id="searchBookBtn" class="btn btn-default" value="Search" style="border-color: #ccc; margin-right: 15px;">
-                            
-<!--                                <label for="email" style="border:none; color: white;">Email: </label>-->
-                                
-                          </form>
+                          <form class="navbar-form navbar-left" method="post">
+                               <label for="searchBY">Search BY:</label>
+                                    <select class="dropdown-new" id = "searchBy" style="margin-left:5px" name="selectOp[]">
+                                        <option>ISBN</option>
+                                        <option>Author</option>
+                                        <option>Title</option>
+                                    </select>
+                                    <div class="form-group">
+                                        <input type="text" id="searchBookstext" placeholder="Search Books" class="form-control" style="border-color: #ccc; margin-left:5px;" name="searchBookstext">
+                                    </div>
+                                    <button  type="submit" name="searchBooks" class="btn btn-default">Search</button>
+
+                           </form>
                           <form class="navbar-form navbar-right" method="post">
                             <div class="form-group">
                                 <input type="text" id="username" placeholder="Username" class="form-control" style="border-color: #ccc;" name="usernameTOlogin">
@@ -196,23 +200,217 @@
                                 <button  type="submit" name="loginbtn" class="btn btn-default">Login</button>
                            
                                <a href="signup.php" class="btn btn-default">Sign UP</a>
-                               <a style="padding-left:2px">Forgot Password?</a>
+                               <a style="padding-left:2px" href="forgetPass.php">Forgot Password?</a>
                          </form>
+                          
+                          <?php
+                                    $servername = "localhost";
+                                    $username = "root";
+                                    $password = "";
+
+                                    // Create connection
+                                    $conn = new mysqli($servername, $username, $password);
+
+                                    // Check connection
+                                    if ($conn->connect_error) {
+                                        die("Connection failed: " . $conn->connect_error);
+                                    }
+
+                                    mysqli_select_db($conn,'library');
+                                    
+                                    if(isset($_POST['searchBooks'])){
+                                        
+                                        foreach ($_POST['selectOp'] as $select)
+                                        {
+                                            if (isset($_POST['searchBookstext'])){
+                                                $_POST['searchBookstext'] = trim($_POST['searchBookstext']);
+//                                                echo "You have selected :" .$select . "<br>" ;
+                                                if (strcmp($select,"ISBN") == 0 ){
+                                                    $sql = "SELECT * FROM book_info WHERE ISBN = '". $_POST['searchBookstext'] . "'";
+//                                                    echo $sql . "<br>";
+                                                    $result = mysqli_query($conn, $sql);
+                                                    if (mysqli_num_rows($result) > 0) {
+                                                        while($row = mysqli_fetch_assoc($result)){
+//                                                            echo "Book name: " . $row['book_name'] . " is_sem: " . $row['is_sem'] . "<br>";
+                                                            $authorName= "";
+                                                            $bookname = $row['book_name'];
+                                                            $book_id = $row['book_id'];
+//                                                            echo "fefa ff ".$book_id;
+                                                            $authorsql = "SELECT author_name FROM author INNER JOIN book_author ON book_author.author_id = author.author_id INNER JOIN book_info ON book_info.book_id = book_author.book_id WHERE book_info.ISBN = '". $_POST['searchBookstext'] . "'";
+                                                            $authroResult = mysqli_query($conn, $authorsql);
+                                                            $count = mysqli_num_rows($authroResult);
+                                                            $i = 0;
+                                                                while($row = mysqli_fetch_assoc($authroResult)){
+                                                                    if ($i == ($count -1 ) ){
+                                                                        $authorName = $authorName . $row['author_name'];
+                                                                    }else{
+                                                                        $authorName = $authorName . $row['author_name'].", ";
+                                                                    }
+                                                                    $i = $i + 1;
+                                                                    
+                                                                }
+                                                            
+                                                            $quantityForIssue = $row['quantity'] - $row['reference_number'];
+                                                            echo '<section id="portfolio" class="portfolio-section-1">
+                                                                <div class="container">
+                                                                    <div class="row">
+                                                                        <div class="col-md-12">
+
+                                                                            <!-- Start Portfolio items -->
+                                                                            <ul id="portfolio-list">
+                                                                                <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="300ms">
+                                                                                    <div class="portfolio-item">
+                                                                                        <img src="img/book.png" class="img-responsive" style="opacity:0.8" alt="" />
+                                                                                        <div class="portfolio-caption">
+                                                                                        
+                                                                                            <h4>'. $bookname .'</h4>
+                                                                                            <p>Author: ' .$authorName . '</p>
+                                                                                            <p>Quantity Available : '.$quantityForIssue . '</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </li>
+                                                                                </ul>
+                                                                                <!-- End Portfolio items -->
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </section>';
+                                                            
+                                                        }
+                                                    }else {
+                                                        echo "No Result found<br>";
+                                                    }
+                                                } 
+                                                else if (strcmp($select,"Author") == 0 ){
+                                                    $sql = "SELECT * FROM book_info WHERE book_id IN (SELECT book_id FROM book_author WHERE author_id IN ( SELECT author_id FROM author WHERE author_name like '%" . $_POST['searchBookstext'] . "%') )";
+//                                                    echo $sql . "<br>";
+                                                    
+                                                    $result = mysqli_query($conn, $sql);
+                                                    if (mysqli_num_rows($result) > 0) {
+                                                        echo '<section id="portfolio" class="portfolio-section-1">
+                                                                <div class="container">
+                                                                    <div class="row">
+                                                                        <div class="col-md-12">
+
+                                                                            <!-- Start Portfolio items -->
+                                                                            <ul id="portfolio-list">';
+                                                        while($row = mysqli_fetch_assoc($result)){
+//                                                            echo "Book name: " . $row['book_name'] . " is_sem: " . $row['is_sem'] . "<br>";
+                                                            $authorName= "";
+                                                            $bookname = $row['book_name'];
+                                                            $book_id = $row['book_id'];
+                                                            $authorsql = "SELECT author_name FROM author INNER JOIN book_author ON book_author.author_id = author.author_id INNER JOIN book_info ON book_info.book_id = book_author.book_id WHERE book_info.book_id = ". $row['book_id'];
+                                                            $authroResult = mysqli_query($conn, $authorsql);
+                                                            $count = mysqli_num_rows($authroResult);
+                                                            $i = 0;
+                                                            while($row1 = mysqli_fetch_assoc($authroResult)){
+                                                                if ($i == ($count -1 ) ){
+                                                                    $authorName = $authorName . $row1['author_name'];
+                                                                }else{
+                                                                    $authorName = $authorName . $row1['author_name'].", ";
+                                                                }
+                                                                $i = $i + 1;
+
+                                                            }
+                                                            $quantityForIssue = $row['quantity'] - $row['reference_number'];
+                                                            echo '<li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="300ms">
+                                                                <div class="portfolio-item">
+                                                                    <img src="img/book.png" class="img-responsive" style="opacity:0.8" alt="" />
+                                                                    <div class="portfolio-caption">
+                                                                        <h4>'. $bookname .'</h4>
+                                                                        <p>Author: ' .$authorName . '</p>
+                                                                        <p>Quantity Available : '.$quantityForIssue . '</p>
+                                                                    </div>
+                                                                </div>
+                                                            </li>';
+                                                                                
+
+                                                        }
+                                                        echo '              </ul>
+                                                                        <!-- End Portfolio items -->
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </section>';
+                                                    }else {
+                                                        echo "No Result found<br>";
+                                                    }
+                                                } 
+                                                else if (strcmp($select,"Title") == 0 ){
+                                                    
+                                                    $sql = "SELECT * FROM book_info WHERE book_name  like '%" . $_POST['searchBookstext'] ."%'";
+//                                                    echo $sql . "<br>";
+                                                    $result = mysqli_query($conn, $sql);
+                                                    if (mysqli_num_rows($result) > 0) {
+                                                        echo '<section id="portfolio" class="portfolio-section-1">
+                                                                <div class="container">
+                                                                    <div class="row">
+                                                                        <div class="col-md-12">
+
+                                                                            <!-- Start Portfolio items -->
+                                                                            <ul id="portfolio-list">';
+                                                        while($row = mysqli_fetch_assoc($result)){
+//                                                            echo "Book name: " . $row['book_name'] . " is_sem: " . $row['is_sem'] . "<br>";
+                                                            
+                                                            $bookname = $row['book_name'];
+                                                            $book_id = $row['book_id'];
+                                                            $authorName= "";
+                                                            $authorsql = "SELECT author_name FROM author INNER JOIN book_author ON book_author.author_id = author.author_id INNER JOIN book_info ON book_info.book_id = book_author.book_id WHERE book_info.book_id = ". $row['book_id'];
+                                                            $authroResult = mysqli_query($conn, $authorsql);
+                                                            $count = mysqli_num_rows($authroResult);
+                                                            $i = 0;
+                                                            while($row1 = mysqli_fetch_assoc($authroResult)){
+                                                                if ($i == ($count -1 ) ){
+                                                                    $authorName = $authorName . $row1['author_name'];
+                                                                }else{
+                                                                    $authorName = $authorName . $row1['author_name'].", ";
+                                                                }
+                                                                $i = $i + 1;
+
+                                                            }
+                                                            $quantityForIssue = $row['quantity'] - $row['reference_number'];
+                                                            echo '<li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="300ms">
+                                                                <div class="portfolio-item">
+                                                                    <img src="img/book.png" class="img-responsive" style="opacity:0.8" alt="" />
+                                                                    <div class="portfolio-caption">
+                                                                        <h4>'. $bookname .'</h4>
+                                                                        <p>Author: ' .$authorName . '</p>
+                                                                        <p>Quantity Available : '.$quantityForIssue . '</p>
+                                                                    </div>
+                                                                </div>
+                                                            </li>';
+                                                                                
+
+                                                        }
+                                                        echo '              </ul>
+                                                                        <!-- End Portfolio items -->
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </section>';
+                                                    }else {
+                                                        echo "No Result found<br>";
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                          ?>
                                
                                        <?php
-                                            $servername = "localhost";
-                                            $username = "root";
-                                            $password = "";
-
-                                            // Create connection
-                                            $conn = new mysqli($servername, $username, $password);
-
-                                            // Check connection
-                                            if ($conn->connect_error) {
-                                                die("Connection failed: " . $conn->connect_error);
-                                            }
-
-                                            mysqli_select_db($conn,'library');
+//                                            $servername = "localhost";
+//                                            $username = "root";
+//                                            $password = "";
+//
+//                                            // Create connection
+//                                            $conn = new mysqli($servername, $username, $password);
+//
+//                                            // Check connection
+//                                            if ($conn->connect_error) {
+//                                                die("Connection failed: " . $conn->connect_error);
+//                                            }
+//
+//                                            mysqli_select_db($conn,'library');
                                             $_SESSION["userID1"]="";
 //                                            $_SESSION["login_user"]="";
                                             $_SESSION["first_name"]="";
@@ -270,99 +468,72 @@
             </div>
         </div>
         
+        <?php
+            
+            $servername = "localhost";
+            $username = "root";
+            $password = "";
 
-           
+            // Create connection
+            $conn = new mysqli($servername, $username, $password);
+
+            // Check connection
+            if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error);
+            }
+
+            mysqli_select_db($conn,'library');
+            
         
-        
-        <!-- Start Portfolio Section -->
-        <section id="portfolio" class="portfolio-section-1">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        
-                        <!-- Start Portfolio items -->
-                        <ul id="portfolio-list">
-                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="300ms">
-                                <div class="portfolio-item">
-                                    <img src="img/book.png" class="img-responsive" style="opacity:0.8" alt="" />
-                                    <div class="portfolio-caption">
-                                        <h4>Book Title</h4>
-                                        <p>Description and authors</p>
-                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
-                                    </div>
-                                </div>
-                            </li>
-                            
-                            
-                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="600ms">
-                                <div class="portfolio-item">
-                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
-                                    <div class="portfolio-caption">
-                                        <h4>Book Title</h4>
-                                        <p>Description and authors</p>
-                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="900ms">
-                                <div class="portfolio-item">
-                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
-                                    <div class="portfolio-caption">
-                                        <h4>Book Title</h4>
-                                        <p>Description and authors</p>
-                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="1200ms">
-                                <div class="portfolio-item">
-                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
-                                    <div class="portfolio-caption">
-                                        <h4>Book Title</h4>
-                                        <p>Description and authors</p>
-                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="1500ms">
-                                <div class="portfolio-item">
-                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
-                                    <div class="portfolio-caption">
-                                        <h4>Book Title</h4>
-                                        <p>Description and authors</p>
-                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="1800ms">
-                                <div class="portfolio-item">
-                                    <img src="img/book.png" class="img-responsive" alt="" style="opacity:0.8" />
-                                    <div class="portfolio-caption">
-                                        <h4>Book Title</h4>
-                                        <p>Description and authors</p>
-                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
-                                    </div>
-                                </div>
-                            </li>
-                            
-                            
-                        </ul>
-                        <!-- End Portfolio items -->
+            echo '<section id="portfolio" class="portfolio-section-1">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <!-- Start Portfolio items -->
+                            <ul id="portfolio-list">';
+            $sql = "SELECT * FROM book_info limit 9";
+            $result = mysqli_query($conn, $sql);
+            if (mysqli_num_rows($result) > 0) {
+                while($row = mysqli_fetch_assoc($result)){
+                    $authorName= "";
+                            $bookname = $row['book_name'];
+                            $book_id = $row['book_id'];
+    //                                                            echo "fefa ff ".$book_id;
+                            $authorsql = "SELECT author_name FROM author INNER JOIN book_author ON book_author.author_id = author.author_id INNER JOIN book_info ON book_info.book_id = book_author.book_id WHERE book_info.book_id = '". $book_id . "'";
+                            $authroResult = mysqli_query($conn, $authorsql);
+                            $count = mysqli_num_rows($authroResult);
+                            $i = 0;
+                                while($row = mysqli_fetch_assoc($authroResult)){
+                                    if ($i == ($count -1 ) ){
+                                        $authorName = $authorName . $row['author_name'];
+                                    }else{
+                                        $authorName = $authorName . $row['author_name'].", ";
+                                    }
+                                    $i = $i + 1;
+
+                                }
+
+                                echo '<li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="300ms">
+                                        <div class="portfolio-item">
+                                            <img src="img/book.png" class="img-responsive" style="opacity:0.8" alt="" />
+                                            <div class="portfolio-caption">
+
+                                                <h4>'. $bookname .'</h4>
+                                                <p>Author: ' .$authorName . '</p>
+                                            </div>
+                                        </div>
+                                    </li>';
+                        }
+                }
+            echo '              </ul>
+                            <!-- End Portfolio items -->
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </section>
-        
-<!--        <img  class="img-responsive"/>-->
-        <!-- End Portfolio Section -->
-        
-        
+                </section>';
+            
+        ?>    
         
         
         

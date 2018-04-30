@@ -140,7 +140,7 @@
                             </li>
                             <li>
                                 <?php
-                                    if (isset($_SESSION['login_user']) && !empty($_SESSION['login_user'])){
+                                    if (isset($_SESSION['userID1']) && !empty($_SESSION['userID1'])){
                                         echo "<a href='userLib.php'>Library Management System</a>";
                                     }else{
                                         echo "<a href='portfolio.php'>Library Management System</a>";

@@ -150,6 +150,7 @@
                             <?php
 
                                 echo "<h1>Hi, " . $_SESSION['userID1'] . "</h1>";
+                            
                             ?>
                         </div>
                     </div>
@@ -161,8 +162,8 @@
                 <nav role="navigation" class="navbar navbar-inverse">
                   <div class="container-fluid">
                       <div class="navbar-header">
-                          <a class="navbar-brand" href="userProfile.php" style="font-size:20px">
-                              User-Profile
+                          <a class="navbar-brand" href="userLib.php" style="font-size:20px">
+                              Go Back
                           </a>
                           <button type="button" class="navbar-toggle" data-target="#navbarCollapse" data-toggle="collapse">
                           <span class="icon-bar"></span>
@@ -173,220 +174,11 @@
                       <div class="navbar-collapse collapse" id="navbarCollapse">
                           
                           <form class="navbar-form navbar-right" method="post">
-                               <button  type="submit" name="logoutbtn" class="btn btn-default">Logout</button>
+                              <button  type="submit" name="cartBtn" class="btn btn-default">Your Cart</button>
+                               <button  type="submit" name="historyOfIssueBookbtn" class="btn btn-default">History</button>
+                              <button  type="submit" name="logoutbtn" class="btn btn-default">Logout</button>
+                              
                           </form>
-                          <form class="navbar-form navbar-right" method="post">
-                               <label for="searchBY">Search BY:</label>
-                                <select class="dropdown-new" id = "searchBy" style="margin-left:5px"name="selectOp[]">
-                                    <option>ISBN</option>
-                                    <option>Author</option>
-                                    <option>Title</option>
-                                </select>
-                                <div class="form-group">
-                                    <input type="text" id="searchBookstext" placeholder="Search Books" class="form-control" style="border-color: #ccc; margin-left:5px;" name="searchBookstext">
-                                </div>
-                                <button  type="submit" name="searchBooks" class="btn btn-default">Search</button>
-                          </form>
-                            
-                               <?php
-                                    $servername = "localhost";
-                                    $username = "root";
-                                    $password = "";
-
-                                    // Create connection
-                                    $conn = new mysqli($servername, $username, $password);
-
-                                    // Check connection
-                                    if ($conn->connect_error) {
-                                        die("Connection failed: " . $conn->connect_error);
-                                    }
-
-                                    mysqli_select_db($conn,'library');
-                                    
-                                    if(isset($_POST['searchBooks'])){
-                                        
-                                        foreach ($_POST['selectOp'] as $select)
-                                        {
-                                            if (isset($_POST['searchBookstext'])){
-                                                $_POST['searchBookstext'] = trim($_POST['searchBookstext']);
-                                                echo "You have selected :" .$select . "<br>" ;
-                                                if (strcmp($select,"ISBN") == 0 ){
-                                                    $sql = "SELECT * FROM book_info WHERE ISBN = '". $_POST['searchBookstext'] . "'";
-                                                    echo $sql . "<br>";
-                                                    $result = mysqli_query($conn, $sql);
-                                                    if (mysqli_num_rows($result) > 0) {
-                                                        while($row = mysqli_fetch_assoc($result)){
-                                                            echo "Book name: " . $row['book_name'] . " is_sem: " . $row['is_sem'] . "<br>";
-                                                            $authorName= "";
-                                                            $bookname = $row['book_name'];
-                                                            $authorsql = "SELECT author_name FROM author INNER JOIN book_author ON book_author.author_id = author.author_id INNER JOIN book_info ON book_info.book_id = book_author.book_id WHERE book_info.ISBN = '". $_POST['searchBookstext'] . "'";
-                                                            $authroResult = mysqli_query($conn, $authorsql);
-                                                            $count = mysqli_num_rows($authroResult);
-                                                            $i = 0;
-                                                                while($row = mysqli_fetch_assoc($authroResult)){
-                                                                    if ($i == ($count -1 ) ){
-                                                                        $authorName = $authorName . $row['author_name'];
-                                                                    }else{
-                                                                        $authorName = $authorName . $row['author_name'].", ";
-                                                                    }
-                                                                    $i = $i + 1;
-                                                                    
-                                                                }
-                                                            
-                                                            echo '<section id="portfolio" class="portfolio-section-1">
-                                                                <div class="container">
-                                                                    <div class="row">
-                                                                        <div class="col-md-12">
-
-                                                                            <!-- Start Portfolio items -->
-                                                                            <ul id="portfolio-list">
-                                                                                <li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="300ms">
-                                                                                    <div class="portfolio-item">
-                                                                                        <img src="img/book.png" class="img-responsive" style="opacity:0.8" alt="" />
-                                                                                        <div class="portfolio-caption">
-                                                                                            <h4>'. $bookname .'</h4>
-                                                                                            <p>Author: ' .$authorName . '</p>
-                                                                                            <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                                                                            <a href="#" class="link-2"><i class="fa fa-link"></i></a>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </li>
-                                                                                </ul>
-                                                                                <!-- End Portfolio items -->
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </section>';
-                                                            
-                                                        }
-                                                    }else {
-                                                        echo "No Result found<br>";
-                                                    }
-                                                } 
-                                                else if (strcmp($select,"Author") == 0 ){
-                                                    $sql = "SELECT * FROM book_info WHERE book_id IN (SELECT book_id FROM book_author WHERE author_id IN ( SELECT author_id FROM author WHERE author_name like '%" . $_POST['searchBookstext'] . "%') )";
-                                                    echo $sql . "<br>";
-                                                    $result = mysqli_query($conn, $sql);
-                                                    if (mysqli_num_rows($result) > 0) {
-                                                        echo '<section id="portfolio" class="portfolio-section-1">
-                                                                <div class="container">
-                                                                    <div class="row">
-                                                                        <div class="col-md-12">
-
-                                                                            <!-- Start Portfolio items -->
-                                                                            <ul id="portfolio-list">';
-                                                        while($row = mysqli_fetch_assoc($result)){
-//                                                            echo "Book name: " . $row['book_name'] . " is_sem: " . $row['is_sem'] . "<br>";
-                                                            $authorName= "";
-                                                            $bookname = $row['book_name'];
-                                                            $authorsql = "SELECT author_name FROM author INNER JOIN book_author ON book_author.author_id = author.author_id INNER JOIN book_info ON book_info.book_id = book_author.book_id WHERE book_info.book_id = ". $row['book_id'];
-                                                            $authroResult = mysqli_query($conn, $authorsql);
-                                                            $count = mysqli_num_rows($authroResult);
-                                                            $i = 0;
-                                                            while($row1 = mysqli_fetch_assoc($authroResult)){
-                                                                if ($i == ($count -1 ) ){
-                                                                    $authorName = $authorName . $row1['author_name'];
-                                                                }else{
-                                                                    $authorName = $authorName . $row1['author_name'].", ";
-                                                                }
-                                                                $i = $i + 1;
-
-                                                            }
-                                                            
-                                                            echo '<li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="300ms">
-                                                                <div class="portfolio-item">
-                                                                    <img src="img/book.png" class="img-responsive" style="opacity:0.8" alt="" />
-                                                                    <div class="portfolio-caption">
-                                                                        <h4>'. $bookname .'</h4>
-                                                                        <p>Author: ' .$authorName . '</p>
-                                                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
-                                                                    </div>
-                                                                </div>
-                                                            </li>';
-                                                                                
-
-                                                        }
-                                                        echo '              </ul>
-                                                                        <!-- End Portfolio items -->
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </section>';
-                                                    }else {
-                                                        echo "No Result found<br>";
-                                                    }
-                                                } 
-                                                else if (strcmp($select,"Title") == 0 ){
-                                                    
-                                                    $sql = "SELECT * FROM book_info WHERE book_name  like '%" . $_POST['searchBookstext'] ."%'";
-                                                    echo $sql . "<br>";
-                                                    $result = mysqli_query($conn, $sql);
-                                                    if (mysqli_num_rows($result) > 0) {
-                                                        echo '<section id="portfolio" class="portfolio-section-1">
-                                                                <div class="container">
-                                                                    <div class="row">
-                                                                        <div class="col-md-12">
-
-                                                                            <!-- Start Portfolio items -->
-                                                                            <ul id="portfolio-list">';
-                                                        while($row = mysqli_fetch_assoc($result)){
-//                                                            echo "Book name: " . $row['book_name'] . " is_sem: " . $row['is_sem'] . "<br>";
-                                                            $authorName= "";
-                                                            $bookname = $row['book_name'];
-                                                            $authorsql = "SELECT author_name FROM author INNER JOIN book_author ON book_author.author_id = author.author_id INNER JOIN book_info ON book_info.book_id = book_author.book_id WHERE book_info.book_id = ". $row['book_id'];
-                                                            $authroResult = mysqli_query($conn, $authorsql);
-                                                            $count = mysqli_num_rows($authroResult);
-                                                            $i = 0;
-                                                            while($row1 = mysqli_fetch_assoc($authroResult)){
-                                                                if ($i == ($count -1 ) ){
-                                                                    $authorName = $authorName . $row1['author_name'];
-                                                                }else{
-                                                                    $authorName = $authorName . $row1['author_name'].", ";
-                                                                }
-                                                                $i = $i + 1;
-
-                                                            }
-                                                            
-                                                            echo '<li class="wow fadeInLeft" data-wow-duration="2s" data-wow-delay="300ms">
-                                                                <div class="portfolio-item">
-                                                                    <img src="img/book.png" class="img-responsive" style="opacity:0.8" alt="" />
-                                                                    <div class="portfolio-caption">
-                                                                        <h4>'. $bookname .'</h4>
-                                                                        <p>Author: ' .$authorName . '</p>
-                                                                        <a href="#portfolio-modal" data-toggle="modal" class="link-1"><i class="fa fa-magic"></i></a>
-                                                                        <a href="#" class="link-2"><i class="fa fa-link"></i></a>
-                                                                    </div>
-                                                                </div>
-                                                            </li>';
-                                                                                
-
-                                                        }
-                                                        echo '              </ul>
-                                                                        <!-- End Portfolio items -->
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </section>';
-                                                    }else {
-                                                        echo "No Result found<br>";
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                          
-                                    if (isset($_POST["logoutbtn"])){
-                                        var_dump(isset($_POST["logoutbtn"]));
-                                        session_unset();
-                                        session_destroy();
-                                        header('Location: portfolio.php');
-                                    }
-                          
-                                    
-                          
-                                        
-                               ?>
                       </div>
                   </div>
               </nav>
@@ -397,113 +189,245 @@
             <div class="row">
                 <div class="col-xs-4">
                     <div class="img">
-                        <img alt="Profile photo" class="img-responsive" src="img/rishabh.jpg" style="padding: 10% 20%;   max-width: 100%;max-height: auto; border-radius : 100%" >
+                        <?php
+                            if (isset($_POST["logoutbtn"])){
+                                var_dump(isset($_POST["logoutbtn"]));
+                                session_unset();
+                                session_destroy();
+                                header('Location: portfolio.php');
+                            }
+                            $servername = "localhost";
+                            $username = "root";
+                            $password = "";
+
+                            // Create connection
+                            $conn = new mysqli($servername, $username, $password);
+
+                            // Check connection
+                            if ($conn->connect_error) {
+                                die("Connection failed: " . $conn->connect_error);
+                            }
+                            
+                            
+                        
+                        
+                            mysqli_select_db($conn,'library');
+                        
+                        
+                            $sql = "SELECT email FROM user_info WHERE person_id = ". $_SESSION['person_id'];
+                            $result = mysqli_query($conn, $sql);
+                            $count = mysqli_num_rows($result);  
+                            $email = "";
+                            if ($count > 0){
+                                while($row = mysqli_fetch_assoc($result)){
+                                    $email = $row['email'];
+                                }
+                            }
+                                    
+                            $filename1 = './uploads/'. $_SESSION['userID1']. ".jpg";
+                            $filename2 = './uploads/'. $_SESSION['userID1']. ".jpeg";
+                            $filename3 = './uploads/'. $_SESSION['userID1']. ".png";
+                            $filename4 = './uploads/'. $_SESSION['userID1']. ".gif";
+
+                            if (file_exists($filename1)) {
+                                echo '<img alt="Profile photo" class="img-responsive" src= "' . $filename1.  '"style="padding: 10% 20%;   max-width: 100%;max-height: auto; border-radius : 100%" >';
+                            }else if (file_exists($filename2) ) {
+                                echo '<img alt="Profile photo" class="img-responsive" src= ' . $filename2.  'style="padding: 10% 20%;   max-width: 100%;max-height: auto; border-radius : 100%" >';
+                            } 
+                            else if (file_exists($filename3)) {
+                                    echo '<img alt="Profile photo" class="img-responsive" src= ' . $filename3.  'style="padding: 10% 20%;   max-width: 100%;max-height: auto; border-radius : 100%" >';
+                            } 
+                            else if (file_exists($filename4)) {
+                                    echo '<img alt="Profile photo" class="img-responsive" src= ' . $filename4.  'style="padding: 10% 20%;   max-width: 100%;max-height: auto; border-radius : 100%" >';
+                            } 
+
+                            else {
+                                    echo '<form action="upload.php" method="post" enctype="multipart/form-data">
+                                        <p class="text-center">Select image to upload:</p>
+                                        <div class = "form-group" style="margin-left: 30%">
+                                            <input type="file" name="fileToUpload" id="fileToUpload">
+                                        </div>
+                                        <div class = "form-group" style="margin-left: 30%">
+                                            <input type="submit" value="Upload Image" name="submit1">
+                                        </div>
+                                    </form>';
+                            }
+                        ?>
+                        
                     </div>
                     <div class="about-text" style="text-align: center; margin-top:0px">
                         <?php
 
                             echo "<h3>". $_SESSION['userID1'] . "</h3>";
                             echo "<h4 style='margin-top:5px'>". $_SESSION['first_name'] . " " . $_SESSION['last_name'] .  "</h4>";
+                            echo "<p style='margin-top:5px'>". $email . "</p>";
                         ?>
                     </div>
                 </div>
+                
+                
+                
                 <div class="col-xs-8" style="margin-top: 20px">
-                    <h3 class="text-center">Issued Books</h3>
+                    
                     <?php
-                        $sql = "SELECT user_books.fine , user_books.date_return, book_info.book_name FROM user_books INNER JOIN book_info ON book_info.book_id = user_books.book_id WHERE person_id = ". $_SESSION['person_id'];
-//                        echo $sql;
+                        
+                        if(isset($_POST['historyOfIssueBookbtn'])){
+                            echo '<h3 class="text-center">History Of Issued Books</h3>';
+                            $historySql = "SELECT user_books.fine , user_books.date_return, user_books.due_date, book_info.book_name from user_books INNER JOIN book_info ON book_info.book_id = user_books.book_id WHERE person_id = ". $_SESSION['person_id'];
+                            $historyResult = mysqli_query($conn, $historySql);
+                            $count = mysqli_num_rows($historyResult);
+                            $j = 0;
+                            if ($count > 0){
+                                echo '<div class = "row">';
+                                $i = 0;
+
+                                while($row = mysqli_fetch_assoc($historyResult)){
+                                    $currDate = date('Y-m-d');
+                                        echo '<div class="col-md-6" style="margin-top: 20px"><div class="thumbnail" >
+                                          <img>
+                                          <h3 style="margin-left: 5px">'.$row['book_name'] .'</h3>
+                                          <p style="margin-top: 10px;margin-left: 5px">Fine: ' . $row['fine'].'</p>';
+                                        if ($row['date_return'] != NULL){
+                                            echo '<p style="margin-left: 5px" >Return Date: ' . $row["date_return"]. '</p>';
+                                        }else{
+                                            echo '<p style="margin-left: 5px" >Return Date: Not Returned</p>';
+                                        }
+                                        echo '</div></div>';
+                                        $j = 1;
+                                    $i = $i + 1;
+                                }
+                                echo '</div>';
+
+                            }else if ($j == 0) {
+                                echo '<div class="col-md-12" style="margin-top: 20px" >
+                                    <div class="thumbnail text-center">
+                                        <h4 style = "color:grey">You have nor issued any books</h4>
+                                    </div>
+                                </div>';
+                            }
+                            else{
+                                 echo '<div class="col-md-12" style="margin-top: 20px" >
+                                    <div class="thumbnail text-center">
+
+                                        <h4 style = "color:grey">You havent issued any books</h4>
+                                    </div>
+                                </div>';
+                            }
+                        }
+                    
+                        if(isset($_POST['cartBtn'])){
+                            echo '<h3 class="text-center">Your Cart</h3>';
+                            $cartSql = "SELECT book_info.book_id, book_info.book_name, cart_books.date_added from cart_books INNER JOIN book_info ON book_info.book_id = cart_books.book_id WHERE person_id = ". $_SESSION['person_id'];
+                            $cartResult = mysqli_query($conn, $cartSql);
+                            $count = mysqli_num_rows($cartResult);
+                            $j = 0;
+                            if ($count > 0){
+                                echo '<div class = "row">';
+                                $i = 0;
+
+                                while($row = mysqli_fetch_assoc($cartResult)){
+                                        echo '<div class="col-md-6" style="margin-top: 20px"><div class="thumbnail" >
+                                          <img>
+                                          <h3 style="margin-left: 5px">'.$row['book_name'] .'</h3>
+                                          <p style="margin-top: 10px;margin-left: 5px">Fine: ' . $row['date_added'].'</p>
+                                          <a style="margin-left: 5px" type="submit" href="userProfile.php?removeBookId='.$row['book_id']. '" class="btn btn-default">Remove</a>';
+//                                        echo $row['book_id'];
+                                        echo '</div></div>';
+                                        $j = 1;
+                                    $i = $i + 1;
+                                }
+                                
+                                echo '</div>';
+
+                            }else if ($j == 0) {
+                                echo '<div class="col-md-12" style="margin-top: 20px" >
+                                    <div class="thumbnail text-center">
+                                        <h4 style = "color:grey">You have no book in cartcart</h4>
+                                    </div>
+                                </div>';
+                            }
+                            else{
+                                 echo '<div class="col-md-12" style="margin-top: 20px" >
+                                    <div class="thumbnail text-center">
+
+                                        <h4 style = "color:grey">You have no book in cart</h4>
+                                    </div>
+                                </div>';
+                            }
+                        }
+                    
+                    if (isset($_GET['removeBookId'])){
+                        $removeSql = "DELETE FROM cart_books WHERE person_id=" . $_SESSION['person_id']. " and book_id =  " .$_GET['removeBookId'];
+                        $removeSqlResult =  mysqli_query($conn, $removeSql);
+                        if ($removeSqlResult){
+                            echo "<script>alert('Your book has been removed from cart')</script>";
+                        }else{
+                            echo "<script>alert('Sorry cannot able to remove Book due to some problem. Try again after Sometime')</script>";
+                        }header("refresh:0;url=userProfile.php");
+                    }
+                    
+                    
+                        echo '<h3 class="text-center">Issued Books</h3>';
+                    
+                        $sql = "SELECT user_books.fine , user_books.date_return, user_books.due_date, book_info.book_name FROM user_books INNER JOIN book_info ON book_info.book_id = user_books.book_id WHERE person_id = ". $_SESSION['person_id'];
                         $result = mysqli_query($conn, $sql);
                         $count = mysqli_num_rows($result);
                         $total_fine = 0;
+                        $j = 0;
                         if ($count > 0){
-                            echo '<div class="col-md-6" style="margin-top: 20px">';
+                            echo '<div class = "row">';
                             $i = 0;
-//                            echo $count . "ddddddddddd";    
-                            while($i < ($count/2) and $row = mysqli_fetch_assoc($result)){
-                                echo '<div class="thumbnail" >
+                            
+                            while($i < ($count) and $row = mysqli_fetch_assoc($result)){
+                                $currDate = date('Y-m-d');
+                                if ($row['date_return'] == NULL ){
+                                    echo '<div class="col-md-6" style="margin-top: 20px"><div class="thumbnail" >
                                       <img>
-                                      <h3>'.$row['book_name'] .'</h3>
-                                      <p style="margin-top: 10px">Fine: ' . $row['fine'].'<br>
-                                      Return Date: ' . $row['date_return'].'</p>
-                                  </div>';
-                                $total_fine = $total_fine + $row['fine'];
-                                $i = $i + 1;
-                            }echo '</div>';
-                            echo '<div class="col-md-6" style="margin-top: 20px" >';
-                            while($i >= ($count/2) and $row = mysqli_fetch_assoc($result) ){
-                                echo '<div class="thumbnail" >
-                                      <img>
-                                      <h3>'.$row['book_name'] .'</h3>
-                                      <p style="margin-top: 10px">Fine: ' . $row['fine'].'<br>
-                                      Return Date: ' . $row['date_return'].'</p>
-                                  </div>';
-                                $total_fine = $total_fine + $row['fine'];
-                                $i = $i + 1;
-                            }echo '</div>';
+                                      <h3 style="margin-left: 5px">'.$row['book_name'] .'</h3>
+                                      <p style="margin-top: 10px;margin-left: 5px">Fine: ' . $row['fine'].'<br>
+                                      Days Left: ' . $row['due_date'].'</p>
+                                    </div></div>';
+                                    $j = 1;
+                                    
+                                }
                                 
+                                $total_fine = $total_fine + $row['fine'];
+                                $i = $i + 1;
+                            }
+                            echo '</div>';
+                                
+                        }else if ($j == 0) {
+                            echo '<div class="col-md-12" style="margin-top: 20px" >
+                                <div class="thumbnail text-center">
+                                    <h4 style = "color:grey">You have currently no book issued</h4>
+                                </div>
+                            </div>';
                         }
-                        echo '<div class="col-md-12" style="margin-top: 20px" ><p>Total Fine : ' . $total_fine. '</p></div>'
+                        else{
+                             echo '<div class="col-md-12" style="margin-top: 20px" >
+                                <div class="thumbnail text-center">
+                                    
+                                    <h4 style = "color:grey">You havent issued any books</h4>
+                                </div>
+                            </div>';
+                        }
+                        echo '<div class="col-md-12 text-center" style="margin-top: 20px" ><h4><span style="color:red;font-weight:bold" >Total Fine</span> : ' . $total_fine. '</h4></div>'
                         
                     ?>
                     
-<!--
-                    <div class="col-md-6" style="margin-top: 20px">
-                          <div class="thumbnail" >
-                              <img>
-                              <h3>fff</h3>
-                              <p>aaaa</p>
-                          </div>
-                          <div class="thumbnail" >
-                              <img>
-                              <h3>fff</h3>
-                              <p>aaaa</p>
-                          </div>
-                          <div class="thumbnail" >
-                              <img>
-                              <h3>fff</h3>
-                              <p>aaaa</p>
-                          </div>
-                    </div>
-                    <div class="col-md-6" style="margin-top: 20px"  >
-                        <div class="thumbnail" >
-                              <img>
-                              <h3>fff</h3>
-                              <p>aaaa</p>
-                          </div>
-                          <div class="thumbnail">
-                              <img>
-                              <h3>fff
-                              dsvvsvs
-                              dvsvsv
-                              
-                              ddaaaaa
-                              
-                              
-                              
-                              adads</h3>
-                              <p>aaaa</p>
-                          </div>
-                          <div class="thumbnail" >
-                              <img>
-                              <h3>fff</h3>
-                              <p>aaaa</p>
-                          </div>
-                    </div>
-                    
+                
+                
                 </div>
--->
-                
-                
             </div>
         </div>
                          
         
-        <div style="height:100px"></div>
+        <div class="container" style="height:100px"></div>
         
         
         
         
-        <!-- Start Footer Section -->
+         <!-- Start Footer Section -->
         <section id="footer-section" class="footer-section">
             <div class="container">
                 <div class="row">
@@ -622,7 +546,6 @@
             </div><!-- /.container -->
         </div>
         <!-- End CCopyright Section -->
-        
         
         
         

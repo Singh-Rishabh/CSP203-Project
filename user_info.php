@@ -191,7 +191,7 @@
                         <!-- Start Navigation List -->
                         <ul class="nav navbar-nav navbar-right">
                             <li>
-                                <a href="index.html">Home</a>
+                                <a href="index.php">Home</a>
                             </li>
                             <li>
                                 <a href="index.html#about-section">About Us</a>
@@ -200,10 +200,10 @@
                                 <a class="active"  href="portfolio.php">Library Management System</a>
                             </li>
                             <li>
-                                <a href="service.html">Student Activities</a>
+                                <a href="StudentActivity.php">Student Activities</a>
                             </li>
                             <li>
-                                <a href="blog.html">Blog</a>
+                                <a href="blogpage.html">Blog</a>
 <!--
                                 <ul class="dropdown">
                                     <li>
